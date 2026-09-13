@@ -1,0 +1,34 @@
+Prompt clonar do zero (loja nova)
+
+Quero replicar uma loja e-commerce completa usando a estrutura VALIDADA da Loja Top Mix.
+
+Estou anexando:
+1. O guia PDF: GUIA-REPLICACAO-COMPLETO.pdf
+2. O código-fonte (repositório ou zip)
+
+DADOS DA NOVA LOJA:
+- Nicho / produto: [ex: capacetes motocross]
+- Nome da loja: [ex: Capacetes Pro]
+- Domínio: [ex: https://capacetespro.com.br]
+- Prefixo do código de rastreio: [ex: CP]
+- Credenciais: vou fornecer separadamente
+
+REPOSITÓRIO BASE:
+https://github.com/analuiza214/loja-top-mix-ironpay-venuspay-cloudflare-12-08
+
+SIGA O PDF SEÇÃO POR SEÇÃO:
+1. Supabase novo + SQL das tabelas (Seção 4)
+2. Personalizar produtos, imagens, textos (Seção 8)
+3. Cloudflare Pages + env vars + KV (Seção 5)
+4. Gateways + webhooks (Seção 6)
+5. Resend + cron-job.org (Seções 3 e 7)
+6. NÃO alterar lógica validada: functions/, checkout, admin, rastreio (Seção 9)
+7. Respeitar 3 regras críticas do Supabase (Seção 4.5)
+8. PRESERVAR a regra cartão recusado → PIX: manter o registro do cartão e criar um segundo pedido PIX independente, copiando nome, email, telefone, endereço completo, produtos e tracking; o PIX deve ter novo orderId, horário, valor, transaction_id e gateway
+
+DEVE FICAR 100% FUNCIONAL: checkout PIX/cartão, fallback cartão → PIX com dois pedidos, conciliação automática, /admin, /rastrear-pedido, emails, gateways, UTM/UTMify e rate limit PIX.
+
+NUNCA commitar secrets (.env, API keys).
+
+Confirme checklist Seção 11 antes de entregar.
+Comece lendo o PDF e me diga o plano passo a passo antes de implementar.

@@ -1,0 +1,38 @@
+Prompt loja já existe só integrar 
+
+Tenho uma loja e-commerce JÁ VALIDADA com meu próprio layout, cores e design.
+
+NÃO quero refazer o visual. Quero INTEGRAR apenas as partes validadas da Top Mix que faltam.
+
+Estou anexando:
+1. GUIA-REPLICACAO-COMPLETO.pdf
+2. Código da MINHA loja atual
+3. (Opcional) Repo Top Mix como referência
+
+DADOS:
+- Nome: [NOME]
+- Domínio: [DOMÍNIO]
+- Prefixo rastreio: [CP]
+- Stack atual: [React/Vite/etc]
+- Já tenho: [home, produto, carrinho, checkout visual...]
+- Falta: [admin, rastreio, PIX/cartão backend, emails, gateways...]
+
+REGRA DE OURO:
+✅ MANTER: layout, cores, tipografia, páginas já validadas
+✅ ADICIONAR: backend Top Mix (functions/, Supabase, admin, rastreio)
+❌ NÃO refazer visual do zero
+
+INTEGRAR:
+- functions/api/* (PIX, cartão, admin, emails, webhooks, cron)
+- Supabase: leads, rastreio_origem, payment_gateways, comprovantes
+- Páginas: /admin e /rastrear-pedido
+- Conectar MEU checkout existente ao /api/pix/create e /api/card/create
+- Criar todo pedido primeiro em /api/orders/create e reutilizar seu orderId no gateway
+- Se cartão for recusado/indisponível e o cliente escolher PIX: manter o pedido do cartão e criar um SEGUNDO pedido PIX independente com os mesmos dados cadastrais, endereço, produtos e tracking
+- Cloudflare env vars + KV + webhooks + Resend + cron-job.org
+
+No checkout: manter meu visual e conectar a criação server-side do pedido e as APIs de pagamento. Não converter a tentativa de cartão em PIX; os dois registros devem aparecer separadamente no admin.
+
+Respeitar regras Supabase Seção 4.5. NUNCA commitar secrets.
+
+Analise meu código, mostre plano de integração e implemente mantendo 100% meu visual.

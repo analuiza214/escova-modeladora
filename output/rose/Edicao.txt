@@ -1,0 +1,1 @@
+Edicao com a ferramenta integrada de imagens. Instrucao: alterar somente as partes plasticas brancas da escova para rose suave #D9A4A6, preservando cerdas, metais, visor, textos e composicao. Aplicada individualmente a A1, A2, A3 e A4. Arquivos finais padronizados em PNG 2048 x 2048.

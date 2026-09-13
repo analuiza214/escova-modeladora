@@ -1,0 +1,15 @@
+const fs=require('fs');
+const file='src/pages/home.tsx';
+let page=fs.readFileSync(file,'utf8');
+const start=page.indexOf('// ── Reviewer photos');
+const end=page.indexOf('// ── Sphere / Coverflow Carousel');
+page=page.slice(0,start)+page.slice(end);
+page=page.replace('const reviewerPhoto = getReviewerPhoto(review.author);','const reviewerPhoto = getImagePath(`/images/avatares/mulher-${review.id}.jpg`);');
+page=page.replace(/\s*<div className="text-xs text-green-600 font-medium">Depoimento fictício<\/div>/,'');
+page=page.replace(/\s*<span className="ml-auto text-\[11px\][\s\S]*?\n\s*Fotos\s*\n\s*<\/span>/,'');
+page=page.replace(/\s*\{i === 0 && \(\s*<span[\s\S]*?✓ Foto[\s\S]*?<\/span>\s*\)\}/,'');
+page=page.replace('Nomes e relatos fictícios para demonstração','Demonstração: nomes, relatos e notas fictícios; avatares ilustrativos');
+fs.writeFileSync(file,page);
+if(page.includes('pravatar')||page.includes('Depoimento fictício')||page.includes('✓ Foto'))throw Error('old content');
+if(!page.includes('relatos e notas fictícios'))throw Error('missing disclosure');
+console.log('14 avatares fixos; selos removidos; aviso da seção preservado.');

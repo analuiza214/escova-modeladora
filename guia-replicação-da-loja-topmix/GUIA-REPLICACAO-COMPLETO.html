@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Guia Completo — Loja E-commerce (estrutura validada)</title>
+<style>
+  @page { margin: 18mm 15mm; size: A4; @bottom-center { content: "TopMix · Guia de Replicação · " counter(page); color: #64748b; font-size: 8pt; } }
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11pt; line-height: 1.55; color: #1a1a2e; margin: 0; padding: 0; }
+  .cover { page-break-after: always; min-height: 260mm; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #0f3460 0%, #16213e 50%, #e94560 100%); color: white; text-align: center; padding: 40px; }
+  .cover h1 { font-size: 28pt; margin: 0 0 12px; font-weight: 800; }
+  .cover .subtitle { font-size: 14pt; opacity: 0.95; max-width: 520px; margin-bottom: 30px; }
+  .cover .badge { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 20px; border-radius: 999px; font-size: 10pt; margin: 6px; display: inline-block; }
+  .cover .date { margin-top: 40px; font-size: 10pt; opacity: 0.8; }
+  h2 { color: #0f3460; border-bottom: 3px solid #e94560; padding-bottom: 6px; margin-top: 28px; page-break-after: avoid; font-size: 16pt; }
+  h3 { color: #16213e; margin-top: 20px; page-break-after: avoid; font-size: 12.5pt; }
+  h4 { color: #533483; margin-top: 14px; font-size: 11pt; }
+  .toc { page-break-after: always; padding: 20px 0; }
+  .toc ol { line-height: 2; }
+  .toc a { color: #0f3460; text-decoration: none; }
+  section { padding: 0 4px; }
+  .box { border-radius: 8px; padding: 14px 16px; margin: 12px 0; page-break-inside: avoid; }
+  .box-blue { background: #eef4ff; border-left: 4px solid #2563eb; }
+  .box-green { background: #ecfdf5; border-left: 4px solid #10b981; }
+  .box-yellow { background: #fffbeb; border-left: 4px solid #f59e0b; }
+  .box-red { background: #fef2f2; border-left: 4px solid #ef4444; }
+  .box-purple { background: #f5f3ff; border-left: 4px solid #7c3aed; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 10pt; page-break-inside: avoid; }
+  th { background: #0f3460; color: white; padding: 8px 10px; text-align: left; }
+  td { border: 1px solid #ddd; padding: 7px 10px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  pre, code { font-family: Consolas, 'Courier New', monospace; font-size: 9pt; }
+  pre { background: #1e293b; color: #e2e8f0; padding: 14px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap; word-break: break-all; page-break-inside: avoid; }
+  code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #be123c; }
+  .step { display: flex; gap: 12px; margin: 14px 0; page-break-inside: avoid; }
+  .step-num { background: #e94560; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; font-size: 12pt; }
+  .step-body { flex: 1; }
+  .checklist { list-style: none; padding: 0; }
+  .checklist li { padding: 4px 0 4px 24px; position: relative; }
+  .checklist li::before { content: "☐"; position: absolute; left: 0; color: #e94560; font-weight: bold; }
+  .diagram { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 9pt; white-space: pre; line-height: 1.4; page-break-inside: avoid; }
+  .page-break { page-break-before: always; }
+  ul { padding-left: 20px; }
+  .footer-note { font-size: 9pt; color: #64748b; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 10px; }
+  .version-card { background: linear-gradient(135deg, #eff6ff, #f5f3ff); border: 1px solid #c7d2fe; border-radius: 12px; padding: 16px; margin: 14px 0; }
+  .pill { display: inline-block; border-radius: 999px; padding: 3px 9px; margin: 2px; background: #e2e8f0; color: #334155; font-size: 8.5pt; font-weight: 700; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .small { font-size: 9pt; color: #475569; }
+  @media print { a { color: inherit; text-decoration: none; } .two-col { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- CAPA -->
+<div class="cover">
+  <div class="badge">Versão 2026 — Estrutura Validada</div>
+  <h1>Guia Completo de Replicação</h1>
+  <p class="subtitle">Especificação integral e atualizada da loja TopMix: interface, checkout, persistência server-side, pagamentos, conciliação, atribuição UTM, admin, rastreio e recuperação.</p>
+  <div>
+    <span class="badge">React + Vite + TypeScript</span>
+    <span class="badge">Cloudflare Pages</span>
+    <span class="badge">Supabase</span>
+    <span class="badge">IronPay · MasterFy · UmbrellaPag · Venus Pay</span>
+  </div>
+  <p class="date">Atualizado em 04/09/2026 · Revisado contra o código-fonte atual. Para uma cópia realmente idêntica, forneça este guia e os ativos autorizados da nova loja.</p>
+</div>
+
+<!-- ÍNDICE -->
+<div class="toc">
+  <h2>Índice</h2>
+  <ol>
+    <li><a href="#visao">Visão geral da arquitetura</a></li>
+    <li><a href="#estrutura">Estrutura de pastas do projeto</a></li>
+    <li><a href="#passo-a-passo">Passo a passo — criar a loja do zero</a></li>
+    <li><a href="#supabase">Supabase — tabelas, SQL e backup</a></li>
+    <li><a href="#cloudflare">Cloudflare Pages — deploy, env vars e KV</a></li>
+    <li><a href="#gateways">Gateways de pagamento (PIX e cartão)</a></li>
+    <li><a href="#fluxos">Fluxos principais (compra, rastreio, admin)</a></li>
+    <li><a href="#personalizar">O que personalizar na nova loja</a></li>
+    <li><a href="#nao-mexer">Lógica que deve ser implementada exatamente</a></li>
+    <li><a href="#servicos">Serviços externos e contas necessárias</a></li>
+    <li><a href="#testes">Checklist de testes antes de ir ao ar</a></li>
+    <li><a href="#prompt">Prompt pronto para usar com um assistente de IA</a></li>
+    <li><a href="#problemas">Problemas comuns e soluções</a></li>
+    <li><a href="#contratos">Contratos de dados, estados e regras de idempotência</a></li>
+    <li><a href="#revisao">Controle de versão e critério de conclusão</a></li>
+  </ol>
+</div>
+
+<!-- SEÇÃO 1 -->
+<section id="visao">
+<h2>1. Visão geral da arquitetura</h2>
+
+<div class="box box-blue">
+<strong>Resumo:</strong> Loja e-commerce completa com checkout próprio, criação server-side de pedidos, painel admin, conciliação automática de PIX, rastreio simulado, emails automáticos, recuperação de carrinho e integração com Facebook CAPI, dataLayer/GA e UTMify. Produtos ficam em arquivo estático (<code>src/lib/data.ts</code>); pedidos e atribuição ficam no Supabase.
+</div>
+
+<div class="version-card">
+<strong>O que mudou nesta revisão:</strong>
+<p class="small">Pedido passa a ser criado por <code>/api/orders/create</code>; atribuição preserva UTMs por 30 dias; PIX é conciliado no servidor; webhook nunca confia apenas no corpo recebido; admin atualiza silenciosamente a cada 60 segundos; UTMify recebe <code>waiting_payment</code> e depois <code>paid</code>; barra de frete usa GPS preciso com fallback controlado por IP.</p>
+<span class="pill">server-side leads</span><span class="pill">UTM first/last touch</span><span class="pill">reconciliação PIX</span><span class="pill">admin sem piscar</span><span class="pill">geolocalização ≤ 500 m</span>
+</div>
+
+<table>
+  <tr><th>Camada</th><th>Tecnologia</th><th>Função</th></tr>
+  <tr><td>Frontend</td><td>React 19 + Vite 7 + TypeScript + Tailwind 4 + shadcn/ui</td><td>Site da loja, checkout, admin, rastreio</td></tr>
+  <tr><td>Backend</td><td>Cloudflare Pages Functions (<code>functions/api/</code>)</td><td>Pedidos, PIX, cartão, conciliação, webhooks, emails, cron, FB CAPI e UTMify</td></tr>
+  <tr><td>Banco</td><td>Supabase (PostgreSQL)</td><td>leads, payment_gateways, rastreio_origem, comprovantes</td></tr>
+  <tr><td>Hospedagem</td><td>Cloudflare Pages</td><td>Build <code>dist/</code> + functions na edge</td></tr>
+  <tr><td>Rate limit PIX</td><td>Cloudflare KV (<code>PIX_RATELIMIT</code>)</td><td>Máx. 5 PIX por IP/hora</td></tr>
+  <tr><td>Emails</td><td>Resend</td><td>Rastreio + recuperação de carrinho</td></tr>
+  <tr><td>Cron</td><td>cron-job.org (gratuito)</td><td>Fila de recuperação de carrinho a cada 15 min</td></tr>
+</table>
+
+<h3>Diagrama do fluxo</h3>
+<div class="diagram">[Cliente] → Site React (Cloudflare Pages)
+              ↓ valida formulário + captura tracking
+       /api/orders/create → Supabase (leads)
+              ↓ orderId obrigatório
+    /api/pix/create  ou  /api/card/create
+              ↓
+   IronPay / MasterFy / UmbrellaPag / Venus Pay
+              ↓ polling / webhook validado / reconciliação do admin
+         Gera código rastreio → rastreio_origem
+              ↓
+    Email Resend + FB Purchase + UTMify (deduplicado)
+              ↓
+    Cliente rastreia em /rastrear-pedido</div>
+
+<h3>Rotas do site (frontend)</h3>
+<table>
+  <tr><th>URL</th><th>Arquivo</th><th>Descrição</th></tr>
+  <tr><td>/</td><td>home.tsx</td><td>Página inicial, hero, produtos, vídeo</td></tr>
+  <tr><td>/produto/:slug</td><td>product.tsx</td><td>Página do produto com galeria e avaliações</td></tr>
+  <tr><td>/carrinho</td><td>cart.tsx</td><td>Carrinho (localStorage)</td></tr>
+  <tr><td>/checkout</td><td>checkout.tsx</td><td>Checkout PIX/cartão — cria lead</td></tr>
+  <tr><td>/sucesso</td><td>success.tsx</td><td>Pós-compra (aprovado/pendente/recusado)</td></tr>
+  <tr><td>/rastrear-pedido</td><td>rastrear-pedido.tsx</td><td>Timeline de rastreio simulada</td></tr>
+  <tr><td>/admin</td><td>admin.tsx</td><td>Painel administrativo completo</td></tr>
+  <tr><td>/duvidas-frequentes, /fale-conosco, /politica-de-trocas</td><td>institucionais</td><td>Páginas de suporte</td></tr>
+</table>
+
+<h3>APIs do backend (Cloudflare Functions)</h3>
+<table>
+  <tr><th>Rota</th><th>Método</th><th>Função</th></tr>
+  <tr><td>/api/admin-login</td><td>POST</td><td>Login admin → token HMAC (8h)</td></tr>
+  <tr><td>/api/admin-verify</td><td>GET</td><td>Valida token do admin</td></tr>
+  <tr><td>/api/admin-gateways</td><td>GET/PATCH</td><td>Listar/ativar gateways (admin)</td></tr>
+  <tr><td>/api/orders/create</td><td>POST</td><td>Cria o pedido no servidor e resolve a atribuição UTM</td></tr>
+  <tr><td>/api/pix/create</td><td>POST</td><td>Gera cobrança PIX (gateway ativo)</td></tr>
+  <tr><td>/api/pix/status</td><td>GET</td><td>Consulta status do PIX</td></tr>
+  <tr><td>/api/pix/webhook</td><td>POST</td><td>Webhook dos gateways PIX</td></tr>
+  <tr><td>/api/card/create</td><td>POST</td><td>Pagamento cartão (Venus Pay)</td></tr>
+  <tr><td>/api/card/status</td><td>GET</td><td>Status do cartão</td></tr>
+  <tr><td>/api/send-tracking-email</td><td>POST</td><td>Email com código de rastreio</td></tr>
+  <tr><td>/api/send-recovery-email</td><td>POST</td><td>Email de carrinho abandonado</td></tr>
+  <tr><td>/api/process-recovery-queue</td><td>POST</td><td>Cron de recuperação (cron-job.org)</td></tr>
+  <tr><td>/api/fb-purchase</td><td>POST</td><td>Facebook Conversions API</td></tr>
+  <tr><td>/api/utmify-order</td><td>POST</td><td>Sincroniza pedido na UTMify</td></tr>
+  <tr><td>/api/reconcile-payments</td><td>POST</td><td>Confere até 50 PIX pendentes dos últimos 7 dias; aceita token admin ou segredo do cron</td></tr>
+</table>
+</section>
+
+<!-- SEÇÃO 2 -->
+<section id="estrutura" class="page-break">
+<h2>2. Estrutura de pastas do projeto</h2>
+
+<pre>loja/
+├── index.html                  ← Título, meta tags, GTM, GA4, UTMify pixel
+├── package.json/package-lock  ← Dependências fixadas + scripts dev/build/serve/typecheck
+├── vite.config.ts              ← Vite + Tailwind + alias @/
+├── wrangler.toml               ← Cloudflare Pages + KV + lista de env vars
+├── public/
+│   └── images/                 ← Fotos dos produtos, logo, hero, avaliações e vídeo
+├── src/
+│   ├── App.tsx                 ← Rotas (wouter)
+│   ├── lib/
+│   │   ├── data.ts             ← ⭐ PRODUTOS (nome, preço, fotos, reviews)
+│   │   ├── supabase.ts         ← Cliente Supabase + tipos Lead
+│   │   ├── encrypt.ts          ← Criptografia AES dos dados de cartão
+│   │   ├── tracking.ts         ← UTM, GA client_id, eventos ecommerce
+│   │   └── utils.ts            ← Utilitários gerais
+│   ├── hooks/use-cart.tsx      ← Carrinho global (localStorage)
+│   ├── components/             ← UI, header, footer, admin, vídeo lazy e barra de frete
+│   └── pages/                  ← Todas as páginas listadas acima
+├── functions/
+│   ├── api/                    ← Rotas HTTP (Cloudflare Pages Functions)
+│   └── _lib/
+│       ├── admin-auth.js       ← Autenticação do admin
+│       ├── gateway-config.js   ← Lê/toggle gateways no Supabase
+│       ├── leads-store.js      ← Persistência server-side, atribuição e fulfillment PIX
+│       ├── pix-gateway-status.js ← Normalização de status dos 4 gateways PIX
+│       ├── utmify.js           ← Payload único e validado da UTMify
+│       └── pix-gateways/       ← Adaptadores IronPay, MasterFy, UmbrellaPag, Venus
+└── supabase/
+    ├── payment_gateways.sql    ← Tabela + seed dos 5 gateways
+    ├── leads_add_gateway.sql   ← Coluna gateway na tabela leads
+    ├── payment_gateways_add_umbrellapag.sql
+    └── payment_gateways_add_venuspay_pix.sql</pre>
+</section>
+
+<!-- SEÇÃO 3 -->
+<section id="passo-a-passo" class="page-break">
+<h2>3. Passo a passo — criar a loja do zero</h2>
+
+<div class="box box-green">
+<strong>Exemplo:</strong> Loja de capacetes. A IA (ou o desenvolvedor) cria um projeto NOVO seguindo este guia, com os produtos, fotos, textos, credenciais e domínio do dono da loja. Não copiar visual, produtos nem identidade de nenhum outro site.
+</div>
+
+<div class="step"><div class="step-num">1</div><div class="step-body">
+<h4>Criar o projeto a partir deste guia</h4>
+<p>Este PDF é a especificação completa. Crie o código do zero (estrutura da Seção 2). Não use zip, clone nem código de outra loja.</p>
+<pre>npm install
+npm run dev</pre>
+<p>Abra <code>http://localhost:5173</code>. O site roda localmente, mas pagamentos e admin precisam das variáveis de ambiente.</p>
+</div></div>
+
+<div class="step"><div class="step-num">2</div><div class="step-body">
+<h4>Criar projeto Supabase (banco novo)</h4>
+<ol>
+<li>Acesse <strong>supabase.com</strong> → New Project</li>
+<li>Anote: <strong>Project URL</strong>, <strong>anon key</strong>, <strong>service_role key</strong></li>
+<li>SQL Editor → execute os scripts da Seção 4 (tabelas + payment_gateways)</li>
+<li>Storage → crie bucket público <code>comprovantes</code> (para upload de comprovantes na página de rastreio)</li>
+<li>Confirme que as colunas de endereço, tracking, gateway, recuperação e idempotência existem exatamente como na Seção 4</li>
+</ol>
+</div></div>
+
+<div class="step"><div class="step-num">3</div><div class="step-body">
+<h4>Personalizar produtos e identidade visual</h4>
+<p>Veja Seção 8 completa. Resumo: editar <code>src/lib/data.ts</code>, imagens em <code>public/images/</code>, textos em header/footer/home/index.html.</p>
+</div></div>
+
+<div class="step"><div class="step-num">4</div><div class="step-body">
+<h4>Criar projeto Cloudflare Pages</h4>
+<ol>
+<li>Acesse <strong>pages.cloudflare.com</strong> → Create a project → Connect to Git</li>
+<li>Conecte o repositório <strong>novo</strong> da loja (conta Git do dono desta loja)</li>
+<li>Build command: <code>npm run build</code></li>
+<li>Build output: <code>dist</code></li>
+<li>Node.js version: <strong>20</strong></li>
+</ol>
+</div></div>
+
+<div class="step"><div class="step-num">5</div><div class="step-body">
+<h4>Configurar variáveis de ambiente no Cloudflare</h4>
+<p>Settings → Environment variables → Production. Adicione TODAS as variáveis da Seção 5. Variáveis <code>VITE_*</code> são injetadas no build.</p>
+</div></div>
+
+<div class="step"><div class="step-num">6</div><div class="step-body">
+<h4>Criar KV namespace para rate limit PIX</h4>
+<ol>
+<li>Cloudflare → Workers &amp; Pages → KV → Create namespace → nome: <code>pix-ratelimit</code></li>
+<li>Pages → Settings → Functions → KV namespace bindings</li>
+<li>Variable name: <code>PIX_RATELIMIT</code> → namespace: <code>pix-ratelimit</code></li>
+</ol>
+</div></div>
+
+<div class="step"><div class="step-num">7</div><div class="step-body">
+<h4>Configurar gateways de pagamento</h4>
+<p>Crie contas nos provedores, obtenha credenciais e configure webhooks. Detalhes na Seção 6.</p>
+</div></div>
+
+<div class="step"><div class="step-num">8</div><div class="step-body">
+<h4>Configurar Resend (emails)</h4>
+<ol>
+<li>Crie conta em <strong>resend.com</strong></li>
+<li>Verifique seu domínio (DNS: SPF, DKIM)</li>
+<li>API Key → <code>RESEND_API_KEY</code></li>
+<li>Email remetente → <code>RESEND_FROM_EMAIL</code> (ex: contato@sualoja.com.br)</li>
+</ol>
+</div></div>
+
+<div class="step"><div class="step-num">9</div><div class="step-body">
+<h4>Configurar cron de recuperação de carrinho</h4>
+<ol>
+<li>Crie conta em <strong>cron-job.org</strong> (gratuito)</li>
+<li>Novo job: POST <code>https://SEU-DOMINIO/api/process-recovery-queue</code></li>
+<li>Header: <code>x-cron-secret: SEU_CRON_SECRET</code></li>
+<li>Intervalo: a cada 15 minutos</li>
+</ol>
+</div></div>
+
+<div class="step"><div class="step-num">10</div><div class="step-body">
+<h4>Deploy e domínio</h4>
+<ol>
+<li>Push para <code>main</code> → Cloudflare faz deploy automático</li>
+<li>Custom domains → adicione seu domínio (ex: loja-capacetes.com.br)</li>
+<li>Atualize <code>SITE_URL</code> com a URL final</li>
+<li>Atualize webhooks dos gateways com a URL final</li>
+</ol>
+</div></div>
+
+<div class="step"><div class="step-num">11</div><div class="step-body">
+<h4>Testar tudo (Seção 11)</h4>
+<p>PIX, cartão, criação server-side do pedido, conciliação, admin, rastreio, emails, atribuição UTM, gateways e localização — antes de anunciar.</p>
+</div></div>
+</section>
+
+<!-- SEÇÃO 4 -->
+<section id="supabase" class="page-break">
+<h2>4. Supabase — tabelas, SQL e backup</h2>
+
+<h3>4.1 Tabela <code>leads</code> (todos os pedidos)</h3>
+<p>Execute no SQL Editor do Supabase (projeto novo, vazio):</p>
+<pre>CREATE TABLE IF NOT EXISTS leads (
+  id              BIGSERIAL PRIMARY KEY,
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  nome            TEXT NOT NULL,
+  email           TEXT NOT NULL,
+  telefone        TEXT NOT NULL,
+  cpf             TEXT,
+  produtos        TEXT NOT NULL,
+  valor           NUMERIC(10,2) NOT NULL,
+  metodo_pagamento TEXT NOT NULL,
+  status          TEXT NOT NULL DEFAULT 'checkout_iniciado',
+  transaction_id  TEXT,
+  gateway         TEXT,
+  codigo_rastreio TEXT,
+  card_encriptado TEXT,
+  card_erro       TEXT,
+  ga_client_id    TEXT,
+  purchase_sent   BOOLEAN DEFAULT FALSE,
+  tracking        JSONB,
+  cidade          TEXT,
+  estado          TEXT,
+  cep             TEXT,
+  rua             TEXT,
+  numero          TEXT,
+  complemento     TEXT,
+  bairro          TEXT,
+  recovery_count  INTEGER DEFAULT 0,
+  recovery_next_at TIMESTAMPTZ
+);
+
+ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "leads_all" ON leads FOR ALL USING (true) WITH CHECK (true);</pre>
+
+<p><strong>Status usados:</strong> <code>checkout_iniciado</code>, <code>pix_gerado</code>, <code>pago</code>, <code>expirado</code>, <code>cartao_processando</code>, <code>cartao_recusado</code>, <code>reembolsado</code>. O rótulo antigo <code>abandonou</code> continua apenas para compatibilidade com registros legados e não deve aparecer como nova opção.</p>
+
+<h4>Contrato do campo <code>tracking</code></h4>
+<pre>{
+  "utm_source": string | null,
+  "utm_medium": string | null,
+  "utm_campaign": string | null,
+  "utm_content": string | null,
+  "utm_term": string | null,
+  "gclid": string | null,
+  "fbclid": string | null,
+  "ttclid": string | null,
+  "first_touch": { ...os 8 campos acima },
+  "last_touch": { ...os 8 campos acima } | null,
+  "attribution_source": "current_visit" | "recovered_customer_history" | "unattributed",
+  "recovered_via_whatsapp": boolean,
+  "attribution_window_days": 30
+}</pre>
+<p>Na criação do pedido, o servidor procura por email ou telefone nos últimos 30 dias. Se a visita atual não tiver parâmetros, herda a atribuição mais recente do cliente; se houver parâmetros atuais, eles prevalecem e o histórico é mantido em <code>first_touch</code>.</p>
+
+<h3>4.2 Tabela <code>rastreio_origem</code> (obrigatória para rastreio)</h3>
+<pre>CREATE TABLE IF NOT EXISTS rastreio_origem (
+  codigo        TEXT PRIMARY KEY,
+  origem_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  nome_cliente  TEXT
+);
+
+ALTER TABLE rastreio_origem ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "rastreio_all" ON rastreio_origem FOR ALL USING (true) WITH CHECK (true);</pre>
+
+<div class="box box-red">
+<strong>⚠️ Regra crítica:</strong> A página <code>/rastrear-pedido</code> só funciona se o código existir em <code>rastreio_origem</code>. Ao marcar pedido como pago (admin ou checkout automático), salve o código em <strong>duas</strong> tabelas: <code>leads.codigo_rastreio</code> + <code>rastreio_origem</code>.
+</div>
+
+<h3>4.3 Tabela <code>payment_gateways</code></h3>
+<pre>CREATE TABLE IF NOT EXISTS payment_gateways (
+  id          TEXT PRIMARY KEY,
+  name        TEXT NOT NULL,
+  method      TEXT NOT NULL CHECK (method IN ('pix', 'card')),
+  enabled     BOOLEAN NOT NULL DEFAULT false,
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+INSERT INTO payment_gateways (id, name, method, enabled) VALUES
+  ('ironpay',     'IronPay',     'pix',  true),
+  ('masterfy',    'MasterFy',    'pix',  false),
+  ('umbrellapag',  'UmbrellaPag', 'pix',  false),
+  ('venuspay',     'Venus Pay',   'card', true),
+  ('venuspay_pix', 'Venus Pay',   'pix',  false)
+ON CONFLICT (id) DO NOTHING;
+
+ALTER TABLE payment_gateways ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "payment_gateways_all" ON payment_gateways
+  FOR ALL USING (true) WITH CHECK (true);
+
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS gateway text;</pre>
+
+<h3>4.4 Tabela <code>comprovantes_taxa</code> + Storage</h3>
+<pre>CREATE TABLE IF NOT EXISTS comprovantes_taxa (
+  id            BIGSERIAL PRIMARY KEY,
+  tracking_code TEXT NOT NULL,
+  file_url      TEXT NOT NULL,
+  file_name     TEXT,
+  created_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE comprovantes_taxa ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "comprovantes_all" ON comprovantes_taxa FOR ALL USING (true) WITH CHECK (true);</pre>
+<p>Storage → New bucket → nome <code>comprovantes</code> → Public bucket → Policies: permitir upload/read com anon key.</p>
+
+<h3>4.5 Regras críticas do Supabase</h3>
+<div class="box box-yellow">
+<ol>
+<li><strong>Nunca use</strong> <code>.order()</code> / <code>.limit()</code> junto com <code>.update()</code> — falha silenciosa. Sempre: SELECT id → UPDATE por id.</li>
+<li><strong>Código de rastreio</strong> deve ir para <code>leads</code> E <code>rastreio_origem</code>.</li>
+<li>No admin, em funções async, <strong>busque o lead direto do Supabase</strong> — não use estado React desatualizado.</li>
+<li>A criação inicial do lead é feita pelo backend com <code>SUPABASE_SERVICE_ROLE_KEY</code>; o checkout só continua se receber um <code>orderId</code>.</li>
+<li><code>purchase_sent</code> funciona como trava de idempotência da conversão UTMify após pagamento PIX. Se o envio falhar, voltar para <code>false</code> para permitir nova tentativa.</li>
+<li>O fulfillment PIX só atribui rastreio quando <code>codigo_rastreio IS NULL</code>, evitando email/código duplicado em polling, webhook e reconciliação concorrentes.</li>
+</ol>
+</div>
+
+<div class="box box-red">
+<strong>Segurança obrigatória:</strong> a <code>SUPABASE_SERVICE_ROLE_KEY</code> pertence somente às Functions. Nunca usar prefixo <code>VITE_</code> nela. Para produção, substitua políticas públicas amplas por políticas RLS mínimas e endpoints autenticados. Não persista CVV após autorização e prefira tokenização do gateway para dados de cartão; a presença de criptografia no navegador não substitui PCI DSS.
+</div>
+
+<h3>4.6 Backup e restauração</h3>
+<p><strong>Backup (Windows PowerShell):</strong></p>
+<pre>$env:PGSSLMODE = 'require'
+$env:PGPASSWORD = 'SENHA_DO_SUPABASE'
+$h = 'db.XXXX.supabase.co'
+pg_dump -h $h -U postgres -d postgres --schema=public -f ".\backup_limpo.sql"
+Remove-Item Env:PGPASSWORD</pre>
+
+<p><strong>Restaurar em projeto novo (vazio):</strong></p>
+<pre>$env:PGSSLMODE = 'require'
+$env:PGPASSWORD = 'SENHA_DO_PROJETO_NOVO'
+$h = 'db.NOVO.supabase.co'
+$arq = ".\backup_limpo.sql"
+psql -h $h -U postgres -d postgres -f $arq *> ".\log_restauracao.txt"
+Remove-Item Env:PGPASSWORD</pre>
+
+<p><strong>Para loja nova sem dados antigos:</strong> use <code>--schema-only</code> no pg_dump + execute <code>payment_gateways.sql</code> manualmente.</p>
+
+<p><strong>Não vai no backup:</strong> arquivos do bucket Storage, variáveis Cloudflare, rascunhos do SQL Editor.</p>
+</section>
+
+<!-- SEÇÃO 5 -->
+<section id="cloudflare" class="page-break">
+<h2>5. Cloudflare Pages — deploy, env vars e KV</h2>
+
+<h3>5.1 Configuração de build</h3>
+<table>
+  <tr><th>Campo</th><th>Valor</th></tr>
+  <tr><td>Framework</td><td>Vite</td></tr>
+  <tr><td>Build command</td><td><code>npm run build</code></td></tr>
+  <tr><td>Output directory</td><td><code>dist</code></td></tr>
+  <tr><td>Node.js</td><td>20</td></tr>
+  <tr><td>Functions directory</td><td><code>functions/</code> (automático)</td></tr>
+</table>
+
+<h3>5.2 Todas as variáveis de ambiente</h3>
+<table>
+  <tr><th>Variável</th><th>Onde</th><th>Para quê</th></tr>
+  <tr><td><code>VITE_SUPABASE_URL</code></td><td>Production</td><td>URL Supabase (frontend)</td></tr>
+  <tr><td><code>VITE_SUPABASE_KEY</code></td><td>Production</td><td>Anon key Supabase (frontend)</td></tr>
+  <tr><td><code>VITE_ENCRYPT_KEY</code></td><td>Production</td><td>Criptografia dos dados de cartão no admin</td></tr>
+  <tr><td><code>SUPABASE_URL</code></td><td>Production</td><td>URL Supabase (backend functions)</td></tr>
+  <tr><td><code>SUPABASE_SERVICE_ROLE_KEY</code></td><td>Production</td><td>Service role (backend — nunca expor no frontend)</td></tr>
+  <tr><td><code>ADMIN_USER</code></td><td>Production</td><td>Usuário do painel /admin</td></tr>
+  <tr><td><code>ADMIN_PASS</code></td><td>Production</td><td>Senha do painel /admin</td></tr>
+  <tr><td><code>ADMIN_SESSION_SECRET</code></td><td>Production</td><td>Segredo HMAC do token (64+ chars aleatórios)</td></tr>
+  <tr><td><code>IRONPAY_API_TOKEN</code></td><td>Production</td><td>Token IronPay (PIX)</td></tr>
+  <tr><td><code>IRONPAY_OFFER_HASH</code></td><td>Production</td><td>Hash da oferta IronPay</td></tr>
+  <tr><td><code>IRONPAY_PRODUCT_HASH</code></td><td>Production</td><td>Hash do produto IronPay</td></tr>
+  <tr><td><code>MASTERFY_API_KEY</code></td><td>Production</td><td>Chave Bearer MasterFy (PIX alternativo)</td></tr>
+  <tr><td><code>UMBRELLAPAG_API_KEY</code></td><td>Production</td><td>Chave x-api-key UmbrellaPag (PIX alternativo)</td></tr>
+  <tr><td><code>VENUS_PAY_SECRET_KEY</code></td><td>Production</td><td>Chave Venus Pay (cartão E PIX)</td></tr>
+  <tr><td><code>VENUS_PAY_PRODUCT_ID</code></td><td>Production</td><td>ID produto Venus Pay (opcional p/ cartão)</td></tr>
+  <tr><td><code>RESEND_API_KEY</code></td><td>Production</td><td>API key Resend</td></tr>
+  <tr><td><code>RESEND_FROM_EMAIL</code></td><td>Production</td><td>Email remetente (domínio verificado)</td></tr>
+  <tr><td><code>FB_PIXEL_ID</code></td><td>Production</td><td>ID Pixel Facebook</td></tr>
+  <tr><td><code>FB_ACCESS_TOKEN</code></td><td>Production</td><td>Token CAPI Facebook</td></tr>
+  <tr><td><code>UTMIFY_API_TOKEN</code></td><td>Production</td><td>Token UTMify</td></tr>
+  <tr><td><code>SITE_URL</code></td><td>Production</td><td>URL pública (webhooks, emails, cron)</td></tr>
+  <tr><td><code>CRON_SECRET</code></td><td>Production</td><td>Protege /api/process-recovery-queue e também autoriza /api/reconcile-payments</td></tr>
+</table>
+
+<div class="box box-yellow"><strong>Após mudar qualquer variável <code>VITE_*</code>:</strong> faça um novo deploy, pois ela é incorporada ao JavaScript durante o build. Segredos sem <code>VITE_</code> ficam apenas no backend.</div>
+
+<h3>5.3 KV — Rate limit PIX</h3>
+<ul>
+<li>Namespace: <code>pix-ratelimit</code></li>
+<li>Binding: <code>PIX_RATELIMIT</code></li>
+<li>Limite: 5 tentativas de PIX por IP por hora</li>
+<li>Chave: <code>ratelimit:pix:{IP}</code> — TTL 3600s</li>
+<li>Não precisa exportar dados do KV (contadores temporários)</li>
+</ul>
+
+<h3>5.4 Deploy manual (alternativa ao Git)</h3>
+<pre>npm run build
+npx wrangler pages deploy dist</pre>
+</section>
+
+<!-- SEÇÃO 6 -->
+<section id="gateways" class="page-break">
+<h2>6. Gateways de pagamento (PIX e cartão)</h2>
+
+<table>
+  <tr><th>ID</th><th>Nome</th><th>Método</th><th>Variáveis</th><th>Webhook</th></tr>
+  <tr><td>ironpay</td><td>IronPay</td><td>PIX</td><td>IRONPAY_API_TOKEN, OFFER_HASH, PRODUCT_HASH</td><td>{SITE_URL}/api/pix/webhook</td></tr>
+  <tr><td>masterfy</td><td>MasterFy</td><td>PIX</td><td>MASTERFY_API_KEY</td><td>{SITE_URL}/api/pix/webhook</td></tr>
+  <tr><td>umbrellapag</td><td>UmbrellaPag</td><td>PIX</td><td>UMBRELLAPAG_API_KEY</td><td>{SITE_URL}/api/pix/webhook</td></tr>
+  <tr><td>venuspay</td><td>Venus Pay</td><td>Cartão</td><td>VENUS_PAY_SECRET_KEY, VENUS_PAY_PRODUCT_ID</td><td>—</td></tr>
+  <tr><td>venuspay_pix</td><td>Venus Pay</td><td>PIX</td><td>VENUS_PAY_SECRET_KEY</td><td>Registrar manual no painel Venus Pay</td></tr>
+</table>
+
+<div class="box box-purple">
+<strong>Regra:</strong> Apenas <strong>um gateway PIX</strong> pode estar ativo por vez. O admin (botão Gateways) desativa os outros automaticamente ao ativar um. Cartão Venus Pay é independente do PIX.
+</div>
+
+<h3>Como ativar/desativar gateways</h3>
+<ol>
+<li>Acesse <code>/admin</code> → botão <strong>Gateways</strong></li>
+<li>Use os toggles para ligar/desligar cada gateway</li>
+<li>Gateway sem credencial no Cloudflare aparece como "não configurado"</li>
+<li>Se cartão estiver desligado, checkout mostra mensagem de indisponibilidade</li>
+</ol>
+
+<h3>Configurar webhooks nos provedores</h3>
+<p>Após deploy com domínio final, configure em cada painel:</p>
+<pre>https://SEU-DOMINIO.com.br/api/pix/webhook</pre>
+<p>Venus Pay PIX: registrar manualmente no dashboard Venus Pay → API → Webhooks.</p>
+<div class="box box-blue"><strong>Validação do webhook:</strong> o corpo recebido serve apenas para identificar transação e provedor. Antes de marcar como pago, o backend consulta o gateway com a credencial privada. PIX pago pode ser concluído por três caminhos idempotentes: polling da tela de sucesso, webhook ou <code>/api/reconcile-payments</code>.</div>
+</section>
+
+<!-- SEÇÃO 7 -->
+<section id="fluxos" class="page-break">
+<h2>7. Fluxos principais</h2>
+
+<h3>7.1 Compra via PIX</h3>
+<pre>Cliente preenche checkout
+  → salva comprador/endereço no localStorage
+  → captura UTM + gclid/fbclid/ttclid + GA client_id
+  → POST /api/orders/create
+  → servidor cria lead (status: checkout_iniciado) e retorna orderId + tracking efetivo
+  → POST /api/pix/create com orderId (gateway ativo)
+  → rate limit KV: máximo 5 tentativas/IP/hora
+  → vincula transaction_id + gateway ao lead (status: pix_gerado)
+  → envia pedido waiting_payment à UTMify sem bloquear o PIX se a UTMify falhar
+  → Exibe QR Code + copia e cola
+  → Cliente paga
+  → Tela consulta /api/pix/status periodicamente
+  → Polling OU webhook validado OU reconciliação detecta pagamento
+  → Gera código rastreio TM + 8 caracteres sem ambiguidade
+  → Salva leads.codigo_rastreio + rastreio_origem
+  → Email automático de rastreio (Resend)
+  → Marca status pago e envia UTMify paid uma única vez (purchase_sent)
+  → Evento Purchase do frontend/CAPI conforme o fluxo configurado</pre>
+
+<div class="box box-yellow"><strong>Um registro por tentativa de pagamento:</strong> <code>/api/orders/create</code> é o único ponto de criação. No checkout normal, crie um único pedido e deixe <code>/api/pix/create</code> atualizar o <code>orderId</code> recebido. A exceção intencional é a troca após cartão recusado ou indisponível: o botão “Pagar via Pix agora” cria primeiro um <strong>segundo pedido independente</strong> e só então gera o PIX nesse novo <code>orderId</code>. O cartão recusado nunca deve ser convertido ou sobrescrito.</div>
+
+<h3>7.2 Compra via Cartão (Venus Pay)</h3>
+<pre>Cliente preenche checkout + dados do cartão
+  → valida Luhn, titular, validade, CPF e CVV
+  → calcula parcelamento (juros a partir de 6x)
+  → POST /api/orders/create (status: checkout_iniciado)
+  → POST /api/card/create
+  → Aprovação instantânea → status: pago
+  → Gera rastreio automático
+  → Email + FB + UTMify
+  → Redireciona /sucesso?payment=card&status=approved
+
+Se gateway responder pending:
+  → status cartao_processando
+  → /sucesso consulta /api/card/status a cada 5s
+
+Se recusar ou ficar indisponível:
+  → status cartao_recusado + card_erro (máx. 500 caracteres)
+  → telas distintas para declined e unavailable
+  → carrinho continua preenchido para tentar novamente
+
+Se o cliente clicar “Pagar via Pix agora”:
+  → mantém o pedido de cartão como cartao_recusado
+  → calcula o valor PIX com 10% de desconto
+  → POST /api/orders/create cria OUTRO pedido com metodo_pagamento pix
+  → copia nome, email, telefone, endereço completo, produtos e tracking
+  → remove orderId e dados de cartão antes de criar o novo registro
+  → salva o novo orderId no sessionStorage
+  → /api/pix/create vincula QR Code, transaction_id e gateway ao novo pedido
+  → admin mostra dois registros próximos: cartão recusado + PIX gerado/pago</pre>
+
+<div class="box box-green"><strong>Resultado esperado no admin:</strong> o registro original continua com método Cartão, status Cartão recusado, dados e motivo da tentativa. Acima dele aparece um novo registro PIX com os mesmos dados cadastrais, endereço, itens e atribuição, mas com valor PIX, horário próprio, transaction_id e gateway. A conciliação consulta somente o registro PIX e o altera para Pago quando o provedor confirmar.</div>
+
+<h3>7.3 Página de rastreio</h3>
+<pre>Cliente digita código em /rastrear-pedido
+  → Busca rastreio_origem.origem_at
+  → Timeline simulada (postado → trânsito → hub → saiu p/ entrega)
+  → Endereço vem de leads (por codigo_rastreio)
+  → Taxa de reenvio: modal PIX R$ 9,00 + upload comprovante</pre>
+
+<h3>7.4 Painel Admin (/admin)</h3>
+<ul>
+<li>Login server-side com <code>ADMIN_USER</code>/<code>ADMIN_PASS</code>; token HMAC expira em 8 horas e fica no <code>sessionStorage</code></li>
+<li>Lista de pedidos com busca, filtros por status/data, paginação (50/página)</li>
+<li>Filtro "Pagos sem rastreio"</li>
+<li>Resumo financeiro (recebido hoje / últimos 7 dias)</li>
+<li>Dropdown de status — marcar "pago" dispara fluxo completo (com confirmação)</li>
+<li>Coluna gateway PIX (IronPay, UmbrellaPag, etc.)</li>
+<li>Status "Reembolsado"</li>
+<li>Gerador de código de rastreio (recolhível) + WhatsApp + email</li>
+<li>Modal Gateways — toggle PIX/cartão</li>
+<li>Visualização de cartão criptografado (VITE_ENCRYPT_KEY)</li>
+<li>Recuperação de carrinho manual + automática (cron)</li>
+<li>Botão Sair (logout)</li>
+<li>Atualização automática a cada <strong>60 segundos</strong> e botão Atualizar manual</li>
+<li>A conciliação de PIX roda em paralelo; a lista antiga permanece visível durante refresh</li>
+<li>Somente a carga inicial mostra spinner grande; refresh usa apenas o ícone do botão</li>
+<li>Bloqueio contra chamadas simultâneas e timeout de 10 segundos na reconciliação disparada pelo admin</li>
+</ul>
+
+<h4>Algoritmo obrigatório da atualização do admin</h4>
+<pre>Ao montar: fetchLeads(); setInterval(fetchLeads, 60_000)
+Se já existe chamada em andamento: retornar sem duplicar
+Primeira carga: mostrar loader; cargas seguintes: manter leads visíveis
+Em paralelo: POST /api/reconcile-payments (Bearer token, abortar após 10s)
+Buscar leads ordenados por created_at DESC
+Se reconciliação concluir com sucesso: buscar novamente silenciosamente
+Falha de refresh: preservar dados já carregados</pre>
+
+<h3>7.5 Recuperação de carrinho</h3>
+<pre>Cron (cron-job.org) a cada 15 min
+  → POST /api/process-recovery-queue
+  → considera somente PIX gerado entre 30 min e 24h atrás
+  → Email 1: 30 min após PIX gerado
+  → Email 2: +4 horas
+  → Email 3: +24 horas após o email 2
+  → para automaticamente quando status vira pago</pre>
+<ul>
+<li>Processa no máximo 10 entradas novas e 10 follow-ups por execução.</li>
+<li>Deduplica por email: apenas o lead mais recente inicia sequência; duplicados recebem <code>recovery_count=-1</code>.</li>
+<li>Antes de enviar, faz update condicional no banco como trava. Duas execuções simultâneas não enviam o mesmo email.</li>
+<li>Se envio do email 1 falhar, devolve o lead para <code>recovery_count=0</code>. Se follow-up falhar, volta ao contador anterior e agenda nova tentativa em 30 minutos.</li>
+<li>Links dos emails usam <code>utm_source=recovery</code>, <code>utm_medium=email</code> e campanhas <code>email1</code>/<code>email2</code>/<code>email3</code>, alimentando a atribuição descrita em 7.6.</li>
+</ul>
+
+<h3>7.6 Atribuição UTM e clientes recuperados</h3>
+<ul>
+<li><code>saveTrackingParams()</code> salva <code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>, <code>utm_content</code>, <code>utm_term</code>, <code>gclid</code>, <code>fbclid</code> e <code>ttclid</code> no <code>localStorage</code>.</li>
+<li>O checkout envia esses dados ao endpoint server-side junto com <code>ga_client_id</code>.</li>
+<li>O servidor procura pedidos do mesmo email ou telefone nos últimos 30 dias. Visita atual sem UTM herda a atribuição anterior e recebe <code>recovered_via_whatsapp: true</code>.</li>
+<li>UTMify recebe valores em centavos, país BR, produto, cliente, método, datas, comissão e parâmetros de tracking.</li>
+<li>Ao gerar PIX envia <code>waiting_payment</code>; após confirmação envia <code>paid</code> com <code>approvedDate</code>.</li>
+</ul>
+
+<h3>7.7 Barra de frete e localização</h3>
+<ul>
+<li>Exibe prazo visual de 30 minutos a partir da abertura e tenta personalizar com a cidade.</li>
+<li>Usa <code>navigator.geolocation.watchPosition</code> com alta precisão, sem cache e limite de 30 segundos.</li>
+<li>Aceita coordenada somente com precisão de até 500 metros e faz geocodificação reversa pelo Nominatim/OpenStreetMap.</li>
+<li>Se o usuário negar a permissão (ou o navegador não tiver geolocalização), usa <code>ipapi.co</code> como fallback. Se GPS autorizado for impreciso ou der outro erro, não substitui pela cidade do IP.</li>
+<li>Prioridade do nome: city → town → village → municipality → county.</li>
+<li>A barra não aparece em <code>/sucesso</code> nem em <code>/rastrear-pedido</code>.</li>
+</ul>
+</section>
+
+<!-- SEÇÃO 8 -->
+<section id="personalizar" class="page-break">
+<h2>8. O que personalizar na nova loja</h2>
+
+<h3>8.1 Produtos — <code>src/lib/data.ts</code></h3>
+<p>Edite o array <code>products[]</code>. Cada produto precisa de:</p>
+<ul class="checklist">
+<li>id, slug (URL), name</li>
+<li>price, originalPrice, pixPrice (10% desconto PIX), installment</li>
+<li>rating, reviewCount, soldCount, badge (opcional)</li>
+<li>description, features[]</li>
+<li>mainImage, gallery[] (caminhos em /public/images/)</li>
+<li>productReviews[] (avaliações com author, rating, text, photo opcional)</li>
+</ul>
+
+<h3>8.2 Imagens — <code>public/images/</code></h3>
+<ul class="checklist">
+<li>Fotos dos produtos (.webp recomendado)</li>
+<li>Fotos das avaliações (rev-*.webp)</li>
+<li>logo.webp → logo da loja</li>
+<li>hero.webp → imagem do banner principal</li>
+<li>favicon.svg</li>
+</ul>
+
+<h3>8.3 Textos e identidade</h3>
+<ul class="checklist">
+<li><code>index.html</code> — título, meta description, GTM/GA4/UTMify IDs</li>
+<li><code>src/components/layout/header.tsx</code> — logo, nome</li>
+<li><code>src/components/layout/footer.tsx</code> — links, contato</li>
+<li><code>src/pages/home.tsx</code> — hero, títulos, provas sociais</li>
+<li><code>src/components/frete-gratis-bar.tsx</code> — texto, prazo e regras de localização</li>
+<li>Páginas institucionais (duvidas, contato, política)</li>
+<li>Emails em <code>functions/api/send-tracking-email.js</code> e <code>send-recovery-email.js</code></li>
+<li>Prefixo do código de rastreio: manter consistente nos geradores do admin, checkout e backend <code>leads-store.js</code></li>
+<li><code>functions/_lib/utmify.js</code> — IDs/nome padrão do produto e domínio de email fallback</li>
+</ul>
+
+<h3>8.4 Credenciais e contas (criar novas para cada loja)</h3>
+<ul class="checklist">
+<li>Supabase — projeto novo</li>
+<li>Cloudflare Pages — projeto novo</li>
+<li>IronPay / MasterFy / UmbrellaPag / Venus Pay — credenciais da loja</li>
+<li>Resend — domínio verificado</li>
+<li>Facebook — pixel + token CAPI novos</li>
+<li>UTMify — token (pode reusar ou criar novo)</li>
+<li>Domínio próprio apontando para Cloudflare</li>
+</ul>
+</section>
+
+<!-- SEÇÃO 9 -->
+<section id="nao-mexer" class="page-break">
+<h2>9. Lógica que deve ser implementada exatamente</h2>
+
+<div class="box box-green">
+<p>Não improvisar estes fluxos. Implementar como descrito neste guia:</p>
+<ul>
+<li>✅ Toda a lógica de checkout (PIX + cartão)</li>
+<li>✅ Cloudflare Functions (<code>functions/api/</code> e <code>functions/_lib/</code>)</li>
+<li>✅ Painel admin completo</li>
+<li>✅ Sistema de rastreio (leads + rastreio_origem)</li>
+<li>✅ Emails automáticos (só muda branding/textos)</li>
+<li>✅ Recuperação de carrinho + cron</li>
+<li>✅ FB CAPI + UTMify (só mudam tokens)</li>
+<li>✅ Criação server-side do pedido antes de chamar qualquer gateway</li>
+<li>✅ Atribuição current/first/last touch com janela de 30 dias</li>
+<li>✅ Conciliação PIX autenticada e fulfillment idempotente</li>
+<li>✅ Atualização silenciosa do admin a cada 60 segundos</li>
+<li>✅ Localização precisa com fallback por IP somente quando permitido pelas regras</li>
+<li>✅ Componentes UI (shadcn) e animações</li>
+<li>✅ Estrutura de rotas</li>
+<li>✅ Rate limit PIX (KV)</li>
+<li>✅ Gateway config (payment_gateways no Supabase)</li>
+</ul>
+</div>
+</section>
+
+<!-- SEÇÃO 10 -->
+<section id="servicos">
+<h2>10. Serviços externos e contas necessárias</h2>
+
+<table>
+  <tr><th>Serviço</th><th>Gratuito?</th><th>Obrigatório?</th><th>Função</th></tr>
+  <tr><td>Repositório Git próprio</td><td>Sim</td><td>Sim</td><td>Código da nova loja + deploy automático no Cloudflare</td></tr>
+  <tr><td>Cloudflare Pages</td><td>Sim</td><td>Sim</td><td>Hospedagem + functions + KV</td></tr>
+  <tr><td>Supabase</td><td>Plano free</td><td>Sim</td><td>Banco de dados + storage</td></tr>
+  <tr><td>IronPay (ou outro PIX)</td><td>—</td><td>Sim (PIX)</td><td>Gateway PIX principal</td></tr>
+  <tr><td>Venus Pay</td><td>—</td><td>Sim (cartão)</td><td>Gateway cartão</td></tr>
+  <tr><td>Resend</td><td>Free tier</td><td>Sim</td><td>Emails transacionais</td></tr>
+  <tr><td>cron-job.org</td><td>Sim</td><td>Sim</td><td>Cron recuperação carrinho</td></tr>
+  <tr><td>Facebook Ads</td><td>—</td><td>Opcional</td><td>Pixel + CAPI</td></tr>
+  <tr><td>UTMify</td><td>—</td><td>Opcional</td><td>Rastreamento UTMs</td></tr>
+  <tr><td>Google Tag Manager</td><td>Sim</td><td>Opcional</td><td>Analytics</td></tr>
+  <tr><td>ViaCEP</td><td>Sim</td><td>Automático</td><td>Busca CEP no checkout</td></tr>
+  <tr><td>Nominatim / OpenStreetMap</td><td>Sim</td><td>Automático</td><td>Converte GPS preciso em cidade</td></tr>
+  <tr><td>ipapi.co</td><td>Sim/limitado</td><td>Fallback</td><td>Cidade aproximada quando GPS é negado ou indisponível</td></tr>
+  <tr><td>Binlist</td><td>Sim/limitado</td><td>Opcional</td><td>Bandeira/categoria exibida no visualizador do admin</td></tr>
+</table>
+</section>
+
+<!-- SEÇÃO 11 -->
+<section id="testes" class="page-break">
+<h2>11. Checklist de testes antes de ir ao ar</h2>
+
+<ul class="checklist">
+<li>Site carrega na home com produtos corretos</li>
+<li>Adicionar ao carrinho + ir ao checkout</li>
+<li>PIX: QR Code gera + status atualiza após pagamento</li>
+<li>Pedido: apenas um lead é criado e o mesmo <code>orderId</code> recebe transaction_id/gateway</li>
+<li>Fallback cartão → PIX: cartão recusado permanece e um segundo lead PIX é criado com os mesmos dados cadastrais/endereço/produtos/tracking</li>
+<li>Fallback cartão → PIX: o novo lead recebe horário, valor com desconto, transaction_id e gateway próprios</li>
+<li>Fallback cartão → PIX: clique duplo é bloqueado e falha ao criar o segundo pedido não gera cobrança órfã</li>
+<li>PIX pendente aparece na UTMify como waiting_payment</li>
+<li>PIX pago por polling, webhook e reconciliação não duplica rastreio, email nem conversão</li>
+<li>Webhook falso não marca pedido pago sem consulta válida ao provedor</li>
+<li>Cartão: aprovação/recusa funcionam</li>
+<li>Admin: login, listar pedidos, filtrar, marcar pago</li>
+<li>Admin: Gateways — toggle PIX e cartão</li>
+<li>Rastreio: código gerado aparece em /rastrear-pedido</li>
+<li>Email de rastreio chega (Resend)</li>
+<li>Webhook PIX configurado no gateway</li>
+<li>Cron de recuperação responde (POST com CRON_SECRET)</li>
+<li>Mobile: admin não corta botões no topo</li>
+<li>Admin: aguardar mais de 60s; lista continua visível e apenas ícone Atualizar gira</li>
+<li>Admin: uma reconciliação lenta termina/aborta em até 10s sem travar contatos</li>
+<li>Domínio customizado + SITE_URL correto</li>
+<li>FB Purchase e UTMify (se usar ads)</li>
+<li>UTM: pedido com parâmetros atuais grava current_visit + first/last touch</li>
+<li>UTM: mesmo cliente volta sem parâmetros em até 30 dias e recupera atribuição anterior</li>
+<li>Localização: GPS preciso mostra município; permissão negada usa IP; GPS impreciso não exibe cidade errada</li>
+<li>Executar <code>npm run build</code> e revisar console/rede nas rotas principais</li>
+</ul>
+</section>
+
+<!-- SEÇÃO 12 -->
+<section id="prompt" class="page-break">
+<h2>12. Prompt pronto para usar com um assistente de IA</h2>
+
+<div class="box box-blue">
+<p>Copie e cole ao iniciar um novo projeto com Cursor, Replit ou similar:</p>
+</div>
+
+<pre>Crie uma loja e-commerce NOVA e 100% funcional seguindo o PDF anexo
+(especificação técnica). Não copie nenhum site existente. Não procure
+repositórios, zips ou lojas de referência na internet.
+
+NOVA LOJA:
+- Produto: [ex: capacetes motocross]
+- Nome: [ex: Capacetes Pro]
+- Domínio: [ex: capacetespro.com.br]
+- Prefixo rastreio: [ex: CP]
+
+SIGA O GUIA À RISCA:
+1. Criar o projeto do zero (Seção 2 e 3)
+2. Supabase novo + SQL das tabelas (Seção 4)
+3. Produtos, imagens e textos DESTA loja (Seção 8)
+4. Cloudflare Pages + env vars + KV (Seção 5)
+5. Gateways + webhooks (Seção 6)
+6. Resend + cron-job.org (Seções 3 e 7)
+7. Implementar exatamente a lógica das Seções 7, 9 e 14
+8. Preservar criação server-side, atribuição UTM de 30 dias e idempotência
+9. Fazer o checklist integral da Seção 11
+
+Credenciais serão fornecidas separadamente. Não commitar secrets.
+Antes de declarar pronto, entregue: árvore de arquivos, SQL, lista de env vars,
+URLs de webhook/cron, resultado do build e evidências dos testes críticos.</pre>
+</section>
+
+<!-- SEÇÃO 13 -->
+<section id="problemas" class="page-break">
+<h2>13. Problemas comuns e soluções</h2>
+
+<table>
+  <tr><th>Problema</th><th>Causa provável</th><th>Solução</th></tr>
+  <tr><td>PIX não gera QR Code</td><td>Gateway off ou credencial faltando</td><td>Verificar Gateways no admin + env vars no Cloudflare</td></tr>
+  <tr><td>Webhook não atualiza pedido</td><td>SITE_URL errado ou webhook não configurado</td><td>Atualizar SITE_URL + URL webhook no gateway</td></tr>
+  <tr><td>PIX pago continua pendente</td><td>Polling fechou, webhook falhou ou gateway mudou</td><td>Executar reconciliação autenticada e conferir transaction_id + gateway salvo no lead</td></tr>
+  <tr><td>UTMify não atribui venda</td><td>Pedido criado sem tracking, token ausente ou purchase_sent inconsistente</td><td>Conferir tracking JSON, UTMIFY_API_TOKEN, logs e restaurar purchase_sent=false somente após falha confirmada</td></tr>
+  <tr><td>Pedido duplicado</td><td>Frontend ainda insere lead e também chama /api/orders/create</td><td>Remover insert paralelo; criar somente pelo endpoint e reutilizar orderId</td></tr>
+  <tr><td>Rastreio não encontra código</td><td>Falta registro em rastreio_origem</td><td>Salvar código nas duas tabelas ao marcar pago</td></tr>
+  <tr><td>Admin não loga</td><td>ADMIN_USER/PASS/SECRET faltando</td><td>Configurar 3 vars no Cloudflare + redeploy</td></tr>
+  <tr><td>Emails não chegam</td><td>Domínio não verificado no Resend</td><td>Verificar DNS SPF/DKIM no Resend</td></tr>
+  <tr><td>Build falha no Cloudflare</td><td>Node version ou dependências</td><td>Node 20 + npm install + npm run build local</td></tr>
+  <tr><td>Cartão desabilitado no checkout</td><td>Gateway venuspay off no admin</td><td>Ativar Venus Pay em Gateways</td></tr>
+  <tr><td>Rate limit PIX (429)</td><td>5 tentativas/IP/hora</td><td>Aguardar 1h ou testar de outro IP</td></tr>
+  <tr><td>Restore Supabase com erro</td><td>Projeto não estava vazio</td><td>Restaurar só em projeto novo sem SQL prévio</td></tr>
+  <tr><td>VITE_* não funciona</td><td>Vars adicionadas após build</td><td>Redeploy após adicionar vars VITE_*</td></tr>
+  <tr><td>Admin apaga lista a cada minuto</td><td>Mesmo estado loading usado na primeira carga e no refresh</td><td>Separar loading/refreshing, manter leads e bloquear concorrência</td></tr>
+  <tr><td>Admin fica girando indefinidamente</td><td>Reconciliação bloqueando busca</td><td>Rodar em paralelo e abortar após 10s</td></tr>
+  <tr><td>Cidade errada na barra</td><td>IP sobrescreveu GPS ou coordenada estava imprecisa</td><td>Aceitar GPS até 500m; não usar IP depois de coordenada autorizada imprecisa</td></tr>
+</table>
+
+</section>
+
+<section id="contratos" class="page-break">
+<h2>14. Contratos de dados, estados e regras de idempotência</h2>
+
+<table>
+<tr><th>Momento</th><th>Estado/efeito obrigatório</th><th>Proteção</th></tr>
+<tr><td>Checkout validado</td><td><code>orders/create</code> cria lead <code>checkout_iniciado</code></td><td>Sem orderId, parar o fluxo e avisar usuário</td></tr>
+<tr><td>Cartão recusado → PIX</td><td>Preservar o cartão e criar outro lead PIX com os mesmos dados</td><td>Novo orderId antes do QR Code; remover dados do cartão do novo pedido; bloquear clique duplo</td></tr>
+<tr><td>PIX criado</td><td>Atualizar o mesmo lead para <code>pix_gerado</code>, transaction_id e gateway</td><td>orderId obrigatório; máximo 5/IP/h</td></tr>
+<tr><td>PIX consultado</td><td>Normalizar paid/approved/pago, expired/cancelled/canceled/refunded ou pending</td><td>Usar gateway salvo no pedido, não apenas o gateway atualmente ativo</td></tr>
+<tr><td>PIX confirmado</td><td><code>pago</code> + rastreio + origem + email + UTMify paid</td><td><code>codigo_rastreio IS NULL</code> e <code>purchase_sent=false</code></td></tr>
+<tr><td>Webhook recebido</td><td>Identificar provedor/transação e responder 200</td><td>Consultar API privada antes de alterar status</td></tr>
+<tr><td>Admin aberto</td><td>Atualizar leads e conciliar pendentes a cada 60s</td><td>Token HMAC, chamada única, lista preservada, timeout 10s</td></tr>
+</table>
+
+<h3>Chaves de armazenamento do navegador</h3>
+<table>
+<tr><th>Chave</th><th>Tipo</th><th>Uso</th></tr>
+<tr><td><code>loja-figurinhas-cart</code></td><td>localStorage</td><td>Carrinho persistente</td></tr>
+<tr><td><code>topmix_buyer</code> / <code>topmix_address_loja</code></td><td>localStorage</td><td>Repreencher comprador e endereço</td></tr>
+<tr><td>8 parâmetros de atribuição</td><td>localStorage</td><td>UTM, gclid, fbclid e ttclid</td></tr>
+<tr><td><code>topmix_pix_tentativas</code> / <code>topmix_card_tentativas</code></td><td>localStorage</td><td>Contadores visuais por cliente/aparelho</td></tr>
+<tr><td><code>checkoutData</code>, <code>pixResult</code>, <code>cardResult</code>, <code>cardData</code></td><td>sessionStorage</td><td>Transição checkout → sucesso</td></tr>
+<tr><td><code>adm_token</code></td><td>sessionStorage</td><td>Sessão administrativa assinada</td></tr>
+</table>
+
+</section>
+
+<section id="revisao" class="page-break">
+<h2>15. Controle de versão e critério de conclusão</h2>
+<div class="box box-green">
+<strong>Fonte de verdade:</strong> este guia descreve o comportamento validado em 04/09/2026, incluindo a correção local mais recente do refresh do admin. Se o código mudar, atualizar primeiro o inventário de rotas, variáveis, tabelas, estados, integrações e checklist; depois regenerar o PDF.
+</div>
+<p>Uma recriação só está concluída quando:</p>
+<ol>
+<li>O build de produção termina sem erro.</li>
+<li>Todas as rotas frontend e APIs da Seção 1 existem.</li>
+<li>Schema, Storage, RLS, variáveis e KV estão configurados.</li>
+<li>Os quatro provedores PIX e o cartão respeitam toggles e contratos.</li>
+<li>Polling, webhook e reconciliação convergem para o mesmo resultado sem duplicidade.</li>
+<li>A troca de cartão recusado para PIX produz dois registros separados e a conciliação atua no registro PIX.</li>
+<li>Admin, rastreio, emails, recuperação, UTMify, CAPI, localização e responsividade passam no checklist.</li>
+<li>Nenhum segredo aparece no Git ou no bundle do frontend.</li>
+</ol>
+
+<div class="footer-note">
+<p><strong>Documento revisado em 04/09/2026</strong> — Especificação técnica e operacional da TopMix com 5 configurações de gateway, persistência server-side, conciliação PIX, atribuição UTM de 30 dias, admin atualizado, rastreio, recuperação e deploy Cloudflare Pages.</p>
+<p>Para recriar em outro nicho, preserve os contratos funcionais e substitua apenas marca, catálogo, ativos, textos, contas e credenciais. Nunca copie conteúdo de terceiros sem autorização.</p>
+</div>
+</section>
+
+</body>
+</html>

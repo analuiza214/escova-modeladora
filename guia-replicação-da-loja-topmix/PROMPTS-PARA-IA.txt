@@ -1,0 +1,143 @@
+================================================================================
+PROMPTS PARA IA — CRIAR LOJA E-COMMERCE (ESPECIFICAÇÃO NO PDF)
+================================================================================
+
+Como usar (o que enviar para o rapaz / para a IA):
+1. Anexe SOMENTE o PDF (GUIA-REPLICACAO-COMPLETO.pdf) + este prompt.
+2. NÃO envie zip, pasta, código-fonte nem links de outro site.
+3. Preencha os placeholders [entre colchetes] com os dados DA LOJA DELE.
+4. Prompt 1 = loja nova do zero.
+5. Prompt 2 = ele já tem loja (layout/cores validados) e só falta admin, rastreio, pagamentos, etc.
+
+A IA deve CRIAR o código a partir do PDF. Não copiar nenhum site existente.
+
+================================================================================
+PROMPT 1 — LOJA NOVA DO ZERO
+================================================================================
+
+Você é um engenheiro de software sênior especializado em e-commerce, React, Cloudflare Pages Functions e Supabase.
+
+## Contexto
+
+Quero uma loja e-commerce NOVA e 100% funcional. Anexei o PDF **GUIA-REPLICACAO-COMPLETO.pdf**. Esse PDF é a especificação técnica completa (arquitetura, pastas, SQL, APIs, env vars, fluxos, checklist).
+
+REGRAS OBRIGATÓRIAS:
+- Crie o projeto DO ZERO seguindo o PDF seção por seção.
+- NÃO copie, clone, baixe nem procure nenhum site, zip, GitHub ou loja de referência.
+- NÃO use produtos, fotos, textos, logo, domínio ou identidade de nenhum outro site.
+- A loja deve ser original: produtos, visual e marca são os dados abaixo.
+
+## Dados desta loja (preencha antes de enviar)
+
+- **Nicho / tipo de produto:** [EX.: loja de capacetes]
+- **Nome da loja:** [EX.: Capacete Pro Store]
+- **Domínio desejado:** [EX.: www.capacetepro.com.br]
+- **Prefixo do código de rastreio:** [EX.: CPX]
+- **Observações sobre credenciais:** [EX.: já tenho Supabase; preciso criar contas nos gateways]
+
+## Stack (conforme o PDF)
+
+- Frontend: React 19 + Vite + TypeScript + Tailwind CSS + shadcn/ui
+- Backend: Cloudflare Pages Functions (`functions/api/*`)
+- Banco: Supabase (PostgreSQL)
+- Deploy: Cloudflare Pages
+- Rate limit PIX: Cloudflare KV
+- Emails: Resend
+- Cron: cron-job.org
+
+## O que implementar (100% conforme o PDF)
+
+1. Estrutura de pastas da Seção 2
+2. Cinco gateways: IronPay, MasterFy, UmbrellaPag, Venus Pay cartão, Venus Pay PIX
+3. Checkout PIX e cartão, webhooks, confirmação de pagamento
+4. Painel `/admin` (pedidos, status, gateways, rastreio, filtros, logout)
+5. Página `/rastrear-pedido`
+6. E-mails de rastreio e recuperação de carrinho
+7. Facebook CAPI + UTMify
+8. Tabelas Supabase e SQL da Seção 4 (incluindo as 3 regras críticas)
+9. Todas as variáveis de ambiente + KV da Seção 5
+10. Frontend original do nicho (home, produto, carrinho, checkout, institucionais)
+11. Regra cartão → PIX: se o cartão for recusado/indisponível e o cliente clicar em “Pagar via Pix agora”, PRESERVAR o pedido de cartão recusado e criar um SEGUNDO pedido PIX independente com os mesmos dados do cliente, endereço completo, produtos e tracking; o novo pedido recebe orderId, horário, valor PIX, transaction_id e gateway próprios
+
+## Como trabalhar
+
+1. Leia o PDF inteiro antes de codar.
+2. Siga seção por seção. Para cada uma: resuma, implemente, valide.
+3. Produtos em `src/lib/data.ts` devem ser DESTA loja (nicho acima).
+4. Prefixo de rastreio: [PREFIXO]
+5. Crie `.env.example` sem valores reais.
+6. NUNCA commite secrets.
+
+## Entregáveis
+
+- Projeto pronto para Cloudflare Pages
+- SQL do Supabase
+- Functions em `functions/api/*`
+- `/admin` e `/rastrear-pedido` funcionando
+- Checkout PIX + cartão
+- Cron de recuperação
+- `.env.example` + README de deploy
+- Checklist da Seção 11 marcado
+
+Comece lendo o PDF, mostre o plano seção por seção e só então implemente. Não busque código de outras lojas.
+
+
+================================================================================
+PROMPT 2 — JÁ EXISTE LOJA (SÓ INTEGRAR O QUE FALTA)
+================================================================================
+
+Você é um engenheiro de software sênior especializado em integração de backends e-commerce, Cloudflare Pages Functions e Supabase.
+
+## Contexto
+
+Eu JÁ TENHO uma loja online com meu próprio design, cores, layout e branding. NÃO quero reconstruir o visual.
+
+Anexei o PDF **GUIA-REPLICACAO-COMPLETO.pdf** (especificação técnica) e o código da MINHA loja atual.
+
+Quero INTEGRAR apenas o que ainda falta (admin, rastreio, pagamentos, emails, etc.), seguindo o PDF.
+
+REGRAS OBRIGATÓRIAS:
+- Mantenha 100% o meu layout, cores, tipografia e páginas que já funcionam.
+- NÃO copie visual, produtos ou identidade de nenhum outro site.
+- NÃO procure zip, GitHub ou loja de referência na internet.
+- Use o PDF como especificação e o MEU código como base.
+
+## Dados desta loja (preencha antes de enviar)
+
+- **Nicho / tipo de produto:** [EX.: loja de capacetes]
+- **Nome da loja:** [EX.: Capacete Pro Store]
+- **Domínio:** [EX.: www.capacetepro.com.br]
+- **Prefixo do código de rastreio:** [EX.: CPX]
+- **Stack atual:** [EX.: React + Vite + Tailwind no Cloudflare Pages]
+- **O que já funciona:** [EX.: home, produto, carrinho, checkout visual]
+- **O que falta:** [EX.: admin, rastreio, PIX/cartão backend, emails, gateways]
+- **Credenciais:** [EX.: Supabase já criado; gateways a configurar]
+
+## O que integrar (somente o que faltar, conforme o PDF)
+
+1. Cloudflare Functions: `/api/pix/*`, `/api/card/*`, `/api/admin-*`, emails, cron, FB CAPI, UTMify
+2. Supabase: tabelas `leads`, `rastreio_origem`, `payment_gateways`, `comprovantes_taxa` + bucket `comprovantes`
+3. Página `/admin` (pedidos, gateways, rastreio, filtros)
+4. Página `/rastrear-pedido`
+5. Ligar o MEU checkout existente em `/api/pix/create` e `/api/card/create` (sem redesenhar a tela)
+6. Env vars, KV `PIX_RATELIMIT`, webhooks, Resend, cron-job.org
+7. Fallback cartão → PIX com dois registros: manter a tentativa de cartão recusada e criar um novo pedido PIX com os mesmos dados cadastrais, endereço, produtos e tracking
+
+## Como trabalhar
+
+1. Analise MEU código primeiro (o que já existe vs o que falta).
+2. Leia o PDF seção por seção e integre só o necessário.
+3. No checkout: manter o visual; criar pedidos por `/api/orders/create` e conectar as APIs de pagamento.
+4. Respeitar as 3 regras críticas do Supabase (Seção 4.5).
+5. NUNCA commite secrets.
+6. Não converter o pedido de cartão em PIX. Ao trocar o método após recusa, criar outro orderId e manter os dois registros no admin.
+
+## Entregáveis
+
+- Plano de integração (antes de codar)
+- Functions, Supabase, `/admin`, `/rastrear-pedido`
+- Checkout existente processando PIX e cartão
+- Checklist da Seção 11
+- Visual original 100% preservado
+
+Comece pelo gap analysis do meu projeto + PDF. Só então implemente.
