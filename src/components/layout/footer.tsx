@@ -27,7 +27,6 @@ export function Footer() {
             <h4 className="font-bold text-sm mb-4 text-gray-200">Links Úteis</h4>
             <ul className="space-y-2 text-xs">
               <li><Link href="/" className="hover:text-white transition-colors">Loja</Link></li>
-              <li><Link href="/rastrear-pedido" className="hover:text-white transition-colors">Rastrear Pedido</Link></li>
               <li><Link href="/politica-de-trocas" className="hover:text-white transition-colors">Política de Trocas</Link></li>
               <li><Link href="/duvidas-frequentes" className="hover:text-white transition-colors">Dúvidas Frequentes</Link></li>
               <li><Link href="/fale-conosco" className="hover:text-white transition-colors">Fale Conosco</Link></li>

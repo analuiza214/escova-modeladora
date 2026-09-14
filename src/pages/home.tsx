@@ -43,20 +43,20 @@ function HomeFaqSection() {
 
 // ── Reviewer photos ──
 const reviewerPhotos: Record<string, string> = {
-  "Amanda A.": "/images/avatares/mulher-1.jpg",
-  "Adriana D.": "/images/avatares/mulher-2.jpg",
-  "Elisa M.": "/images/avatares/mulher-3.jpg",
-  "Camila S.": "/images/avatares/mulher-4.jpg",
-  "Fernanda F.": "/images/avatares/mulher-5.jpg",
-  "Natália R.": "/images/avatares/mulher-6.jpg",
-  "Sabrina A.": "/images/avatares/mulher-7.jpg",
-  "Juliana P.": "/images/avatares/mulher-8.jpg",
-  "Mariana L.": "/images/avatares/mulher-9.jpg",
-  "Beatriz C.": "/images/avatares/mulher-10.jpg",
-  "Renata M.": "/images/avatares/mulher-11.jpg",
-  "Patrícia V.": "/images/avatares/mulher-12.jpg",
-  "Larissa T.": "/images/avatares/mulher-13.jpg",
-  "Vanessa O.": "/images/avatares/mulher-14.jpg",
+  "Amanda Alves": "/images/avatares/mulher-1.jpg",
+  "Adriana Duarte": "/images/avatares/mulher-2.jpg",
+  "Elisa Martins": "/images/avatares/mulher-3.jpg",
+  "Camila Soares": "/images/avatares/mulher-4.jpg",
+  "Fernanda Freitas": "/images/avatares/mulher-5.jpg",
+  "Natália Ribeiro": "/images/avatares/mulher-6.jpg",
+  "Sabrina Almeida": "/images/avatares/mulher-7.jpg",
+  "Juliana Pires": "/images/avatares/mulher-8.jpg",
+  "Mariana Lima": "/images/avatares/mulher-9.jpg",
+  "Beatriz Costa": "/images/avatares/mulher-10.jpg",
+  "Renata Moura": "/images/avatares/mulher-11.jpg",
+  "Patrícia Vieira": "/images/avatares/mulher-12.jpg",
+  "Larissa Teixeira": "/images/avatares/mulher-13.jpg",
+  "Vanessa Oliveira": "/images/avatares/mulher-14.jpg",
 };
 
 function getReviewerPhoto(author: string): string {

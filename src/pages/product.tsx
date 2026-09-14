@@ -338,7 +338,7 @@ export default function Product() {
             <h2 className="text-xl font-bold text-gray-900 mb-1">Avaliações de Clientes</h2>
             <div className="flex items-center gap-2">
               <div className="flex">{[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />)}</div>
-              <span className="font-bold text-yellow-600">4.9</span>
+              <span className="font-bold text-yellow-600">{product.rating}</span>
               <span className="text-gray-500 text-sm">({product.reviewCount} avaliações)</span>
             </div>
           </div>
