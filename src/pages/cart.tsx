@@ -50,7 +50,7 @@ export default function Cart() {
         </div>
         <h1 className="text-2xl font-bold mb-3 text-gray-900">Seu carrinho está vazio</h1>
         <p className="text-gray-500 mb-7 max-w-sm text-sm leading-relaxed">
-          Adicione produtos fantásticos da Copa do Mundo 2026 ao seu carrinho!
+          Escolha sua escova ou kit de beleza e adicione ao carrinho!
         </p>
         <button onClick={() => setLocation("/")} className="px-8 py-3 rounded-xl font-bold text-white text-sm hover:opacity-90 transition-all shadow-sm" style={{ background: "linear-gradient(135deg, #15803d, #22c55e)" }}>
           Continuar Comprando

@@ -16,7 +16,7 @@ export function Footer() {
             </div>
           </Link>
           <p className="text-xs leading-relaxed text-gray-500 max-w-xs mx-auto sm:mx-0">
-            Sua loja especializada em álbuns e figurinhas da Copa do Mundo 2026. Produtos 100% originais Panini.
+            Escovas modeladoras e kits de escova secadora para completar sua rotina de beleza.
           </p>
           <p className="text-[11px] text-gray-600 font-medium mt-2">CNPJ: 08.815.098/0001-47</p>
         </div>
@@ -36,10 +36,10 @@ export function Footer() {
           <div>
             <h4 className="font-bold text-sm mb-4 text-gray-200">Nossos Kits</h4>
             <ul className="space-y-2 text-xs">
-              <li><Link href="/produto/album-250-figurinhas" className="hover:text-white transition-colors">Kit 250 Figurinhas</Link></li>
-              <li><Link href="/produto/album-180-figurinhas" className="hover:text-white transition-colors">Kit 180 Figurinhas</Link></li>
-              <li><Link href="/produto/kit-140-figurinhas" className="hover:text-white transition-colors">Kit 140 Figurinhas</Link></li>
-              <li><Link href="/produto/kit-252-figurinhas" className="hover:text-white transition-colors">Super Kit 252</Link></li>
+              <li><Link href="/produto/kit-7-em-1-bege" className="hover:text-white transition-colors">Kit 7 em 1 Bege</Link></li>
+              <li><Link href="/produto/kit-7-em-1-lilas" className="hover:text-white transition-colors">Kit 7 em 1 Lilás</Link></li>
+              <li><Link href="/produto/escova-rose" className="hover:text-white transition-colors">Escova Rosê</Link></li>
+              <li><Link href="/produto/escova-azul-ceu" className="hover:text-white transition-colors">Escova Azul Céu</Link></li>
             </ul>
           </div>
         </div>

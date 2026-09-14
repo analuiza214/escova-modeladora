@@ -10,7 +10,7 @@ const topicos = [
   {
     icone: Package,
     titulo: "Condições do Produto",
-    texto: "O produto deve ser devolvido em sua embalagem original, sem sinais de uso, com todos os itens que acompanhavam o pedido (álbum, envelopes e brindes).",
+    texto: "O produto deve ser devolvido em sua embalagem original, sem sinais de uso, com todos os itens que acompanhavam o pedido (aparelho, acessórios e demais itens incluídos).",
   },
   {
     icone: RefreshCw,

@@ -724,7 +724,7 @@ export default function RastrearPedido() {
       {
         icone: CheckCircle,
         label: primeiroNome ? `Entregue a ${primeiroNome}` : "Entregue",
-        descricao: "Seu Kit Copa 2026 foi entregue com sucesso. Obrigado pela confiança! 🎉",
+        descricao: "Seu pedido Bella Mix foi entregue com sucesso. Obrigado pela confiança! 🎉",
         data: min >= 2880 ? fmt(tEntregue) : fmtPrev(tEntregue),
         ok: min >= 2880,
       },

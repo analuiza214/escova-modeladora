@@ -1,51 +1,14 @@
+import { productFaqs } from "@/lib/product-faqs";
 import { useState } from "react";
 import { Link } from "wouter";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 
-const objecoesPrincipais = [
-  {
-    icon: "✅",
-    q: "É original mesmo? Não é falsificado?",
-    r: "100% original Panini! Todos os nossos álbuns e figurinhas são adquiridos diretamente do distribuidor oficial autorizado. Você recebe o produto lacrado de fábrica, com o selo de autenticidade Panini. Nunca vendemos produtos falsificados — nossa reputação está em jogo em cada venda.",
-  },
-  {
-    icon: "📦",
-    q: "É PDF? Tenho que imprimir em casa?",
-    r: "Não! São figurinhas físicas oficiais Panini, impressas pela própria editora. Você recebe o álbum encadernado e os envelopes lacrados com as figurinhas de papel — exatamente igual ao que encontra nas bancas e papelarias, só que com frete grátis e preço muito melhor.",
-  },
-  {
-    icon: "🛡️",
-    q: "Qual a garantia que tenho ao comprar?",
-    r: "Você tem 90 dias de garantia total. Se por qualquer motivo não ficar satisfeito, devolvemos 100% do seu dinheiro sem burocracia e sem perguntas. Sua compra é protegida por pagamento seguro (Pix, cartão ou boleto) — seus dados ficam sempre protegidos.",
-  },
-  {
-    icon: "🚚",
-    q: "Em quantos dias chega? Frete é grátis?",
-    r: "Sim, frete 100% grátis para todo o Brasil! O prazo de entrega é de 1 a 3 dias úteis após a confirmação do pagamento. Pedidos pagos via Pix até às 14h saem no mesmo dia. Você recebe o código de rastreamento por e-mail assim que seu pacote for postado.",
-  },
-];
+const objecoesPrincipais = productFaqs.slice(0, 4);
 
 const faqs = [
   {
     categoria: "Produto",
-    perguntas: [
-      {
-        q: "Os produtos são originais Panini?",
-        r: "Sim! Todos os nossos álbuns e figurinhas são 100% originais Panini, adquiridos diretamente do distribuidor oficial. Você recebe um produto lacrado e autêntico.",
-      },
-      {
-        q: "O álbum já vem com as figurinhas?",
-        r: "Sim! Nossos kits incluem o álbum oficial e envelopes de figurinhas conforme descrito em cada produto. Por exemplo, o Kit 250 inclui 35 envelopes lacrados (7 figurinhas cada).",
-      },
-      {
-        q: "As figurinhas são repetidas?",
-        r: "Cada envelope é lacrado de fábrica e sua composição é aleatória. É possível que alguns envelopes tenham figurinhas repetidas, como em qualquer coleção oficial.",
-      },
-      {
-        q: "Posso comprar figurinhas avulsas?",
-        r: "No momento trabalhamos apenas com kits completos (álbum + envelopes). Acompanhe nossas redes sociais para novidades sobre figurinhas avulsas.",
-      },
-    ],
+    perguntas: productFaqs,
   },
   {
     categoria: "Entrega",

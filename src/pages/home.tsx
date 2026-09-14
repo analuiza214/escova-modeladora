@@ -1,3 +1,4 @@
+import { productFaqs } from "@/lib/product-faqs";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { Link } from "wouter";
 import { products, reviews } from "@/lib/data";
@@ -7,28 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { WistiaPlayer } from "@/components/wistia-player";
 
 // ── FAQ Section ──
-const homeFaqs = [
-  {
-    icon: "✅",
-    q: "É original mesmo? Não é falsificado?",
-    r: "100% original Panini! Todos os nossos álbuns e figurinhas são adquiridos diretamente do distribuidor oficial autorizado. Você recebe o produto lacrado de fábrica, com o selo de autenticidade Panini. Nunca vendemos produtos falsificados.",
-  },
-  {
-    icon: "📦",
-    q: "É PDF? Tenho que imprimir em casa?",
-    r: "Não! São figurinhas físicas oficiais Panini, impressas pela própria editora. Você recebe o álbum encadernado e os envelopes lacrados com as figurinhas de papel, exatamente igual ao que encontra nas bancas — só que com frete grátis e preço melhor.",
-  },
-  {
-    icon: "🛡️",
-    q: "Qual a garantia que tenho ao comprar?",
-    r: "Você tem 90 dias de garantia total. Se por qualquer motivo não ficar satisfeito, devolvemos 100% do seu dinheiro, sem burocracia e sem perguntas. Além disso, sua compra é protegida por pagamento seguro (Pix, cartão ou boleto) — seus dados ficam sempre protegidos.",
-  },
-  {
-    icon: "🚚",
-    q: "Em quantos dias chega? Frete é grátis?",
-    r: "Sim, frete 100% grátis para todo o Brasil! O prazo de entrega é de 1 a 3 dias úteis após a confirmação do pagamento. Pedidos pagos via Pix até às 14h saem no mesmo dia. Você recebe o código de rastreamento por e-mail assim que seu pacote for postado.",
-  },
-];
+const homeFaqs = productFaqs;
 
 function HomeFaqSection() {
   const [aberto, setAberto] = useState<number | null>(null);
@@ -299,13 +279,13 @@ export default function Home() {
             onClick={() => document.getElementById("kits")?.scrollIntoView({ behavior: "smooth" })}
           >
             <img
-              src={getImagePath("/images/hero-kit.webp")}
-              alt="Kit Queima de Estoque — 650 Figurinhas Copa do Mundo 2026"
+              src={getImagePath("/images/hero-kit-7-em-1.webp")}
+              alt="Kit 7 em 1 Escova Secadora com maleta por R$ 129,90"
               className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-[1.01]"
               fetchPriority="high"
               decoding="sync"
-              width={1200}
-              height={630}
+              width={1536}
+              height={1024}
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 rounded-2xl" />
           </div>
@@ -331,7 +311,7 @@ export default function Home() {
       <section id="kits" className="py-10 bg-white">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-5">
-            <p className="text-xs font-black tracking-widest uppercase text-green-700 mb-1">Coleção Copa 2026</p>
+            <p className="text-xs font-black tracking-widest uppercase text-green-700 mb-1">Coleção de Beleza Bella Mix</p>
             <h2 className="text-xl sm:text-2xl font-black text-gray-900">Escolha Seu Kit</h2>
           </div>
 
@@ -339,7 +319,7 @@ export default function Home() {
             {products.map((product, idx) => {
               const topLabel =
                 idx === 0 ? <span className="badge-relampago"><span className="fire-icon">🔥</span>Oferta Relâmpago</span>
-                : idx === 3 ? <span className="badge-album">Ideal p/ quem já tem o álbum</span>
+                : idx === 3 ? <span className="badge-beleza">Para sua rotina de beleza</span>
                 : idx === 4 ? <span className="badge-presente">Ótimo para presentear</span>
                 : null;
 
@@ -416,7 +396,7 @@ export default function Home() {
             <p className="text-green-200 text-xs font-bold tracking-widest uppercase mb-1">Desconto Exclusivo</p>
             <h3 className="text-xl sm:text-2xl font-black text-white mb-1">10% OFF PAGANDO NO PIX</h3>
             <p className="text-green-100 text-sm mb-4">Aprovação instantânea. Sem taxas. Frete grátis.</p>
-            <Link href="/produto/album-250-figurinhas">
+            <Link href="/produto/kit-7-em-1-bege">
               <button className="px-7 py-2.5 rounded-xl font-black text-sm bg-white hover:bg-gray-50 transition-all shadow"
                 style={{ color: "#166534" }}>
                 QUERO O DESCONTO PIX
@@ -446,16 +426,15 @@ export default function Home() {
             <p className="text-sm text-gray-500 mt-1">Veja quem já garantiu o kit e recebeu em casa</p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {[
-              { mediaId: "h9j9o2l9vc", aspect: 0.5625, name: "Vanessa Santos",  city: "São Paulo, SP",        stars: 5 },
-              { mediaId: "p8ikrk6u0t", aspect: 0.5625, name: "Roberta Soares",  city: "Rio de Janeiro, RJ",   stars: 5 },
-              { mediaId: "egdiv3fvbn", aspect: 0.75,   name: "Ana Lima",        city: "Belo Horizonte, MG",   stars: 5 },
-              { mediaId: "yq0hnqjl7y", aspect: 0.75,   name: "Karol Silva",     city: "Recife, PE",           stars: 5 },
-              { mediaId: "4jk3s1rj65", aspect: 0.75,   name: "Patrícia Mendes", city: "Curitiba, PR",         stars: 5 },
+              { mediaId: "43o1wjrs8m", name: "Vanessa Santos", city: "São Paulo, SP", stars: 5 },
+              { mediaId: "wkqskzw8nf", name: "Roberta Soares", city: "Rio de Janeiro, RJ", stars: 5 },
+              { mediaId: "9r9frm3do1", name: "Ana Lima", city: "Belo Horizonte, MG", stars: 5 },
+              { mediaId: "lvctikn03c", name: "Karol Silva", city: "Recife, PE", stars: 5 },
             ].map((dep) => (
               <div key={dep.mediaId} className="flex flex-col rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50">
-                <WistiaPlayer mediaId={dep.mediaId} aspect={dep.aspect} />
+                <WistiaPlayer mediaId={dep.mediaId} aspect={0.5625} />
                 <div className="px-3 py-2.5">
                   <div className="flex gap-0.5 mb-1">
                     {Array.from({ length: dep.stars }).map((_, i) => (
@@ -518,7 +497,7 @@ export default function Home() {
                 {[
                   { icon: "🔒", label: "Compra 100% Segura" },
                   { icon: "💸", label: "Reembolso Total Garantido" },
-                  { icon: "📦", label: "Produto Original Panini" },
+                  { icon: "📦", label: "Cuidados com o Cabelo" },
                 ].map((item, i) => (
                   <div key={i} className="bg-white rounded-xl p-3 shadow-sm border border-green-100 flex flex-col items-center gap-1.5">
                     <span className="text-2xl">{item.icon}</span>
@@ -546,14 +525,14 @@ export default function Home() {
       <section className="py-10 bg-white px-4">
         <div className="max-w-lg mx-auto text-center space-y-4">
           <h2 className="text-xl sm:text-2xl font-black text-gray-900">
-            Não deixe seu filho ficar<br />
-            <span style={{ color: "#E09400" }}>sem o álbum da Copa!</span>
+            Seu próximo favorito para<br />
+            <span style={{ color: "#E09400" }}>cuidar do seu cabelo!</span>
           </h2>
-          <p className="text-gray-500 text-sm">Estoque limitado. Produto 100% original Panini.</p>
-          <Link href="/produto/album-250-figurinhas">
+          <p className="text-gray-500 text-sm">Escolha sua cor e conheça os acessórios do kit 7 em 1.</p>
+          <Link href="/produto/kit-7-em-1-bege">
             <button className="w-full sm:w-auto px-10 py-4 rounded-xl font-black text-base text-white shadow-md hover:opacity-90 active:scale-95 transition-all"
               style={{ background: "linear-gradient(135deg, #1e3a8a, #2563eb, #1d4ed8)" }}>
-              GARANTIR MEU KIT — R$ 49,00
+              CONHECER O KIT 7 EM 1
             </button>
           </Link>
           <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-500 pt-1">

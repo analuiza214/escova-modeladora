@@ -107,8 +107,8 @@ export async function onRequest(context) {
 
   // ── Payload Venus Pay ────────────────────────────────────────────────────────
   const productPayload = productId
-    ? { id: productId, name: productName || "Kit Figurinhas Copa do Mundo 2026" }
-    : { name: productName || "Kit Figurinhas Copa do Mundo 2026" };
+    ? { id: productId, name: productName || "Kit Escova Secadora 7 em 1" }
+    : { name: productName || "Kit Escova Secadora 7 em 1" };
 
   const payload = {
     amount: amountDecimal,

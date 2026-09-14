@@ -59,7 +59,7 @@ export async function createPixIronpay(context, corsHeaders, body) {
     cart: [
       {
         product_hash: productHash,
-        title: productName || "Kit Album Copa Do Mundo 2026 Capa Mole + 250 Figurinhas Panini",
+        title: productName || "Kit Escova Secadora 7 em 1",
         cover: null,
         price: amountInCents,
         quantity: 1,

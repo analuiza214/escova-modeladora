@@ -313,7 +313,7 @@ export default function Success() {
   const [switchingToPix, setSwitchingToPix] = useState(false);
   const [switchToPixError, setSwitchToPixError] = useState<string | null>(null);
   const [orderAmount, setOrderAmount] = useState(49.0);
-  const [orderProductName, setOrderProductName] = useState("Kit Álbum Copa Do Mundo 2026");
+  const [orderProductName, setOrderProductName] = useState("Kit Escova Secadora 7 em 1");
 
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
 

@@ -35,9 +35,9 @@ export async function sendUtmifyOrder(env, order) {
     },
     products: [{
       id: "topmix_figurinhas",
-      name: order.productName || "Kit de figurinhas",
+      name: order.productName || "Kit Escova Secadora",
       planId: "topmix_figurinhas",
-      planName: order.productName || "Kit de figurinhas",
+      planName: order.productName || "Kit Escova Secadora",
       quantity: 1,
       priceInCents: valueInCents,
     }],

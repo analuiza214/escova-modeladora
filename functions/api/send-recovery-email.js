@@ -12,8 +12,8 @@ function buildEmail1(primeiroNome, localidade, cidadeFormatada, produtos, valorF
     : "Você quase finalizou. Seu pedido ainda está guardado aqui pra você.";
 
   const desejoComCidade = cidadeFormatada
-    ? `Confirme agora e suas figurinhas saem daqui direto pra <strong>${cidadeFormatada}</strong> — entrega garantida em <strong>até 2 dias úteis</strong>, com rastreio do começo ao fim.`
-    : `Confirme agora e suas figurinhas chegam onde você está — entrega garantida em <strong>até 2 dias úteis</strong>, com rastreio do começo ao fim.`;
+    ? `Confirme agora e seu kit sai daqui direto pra <strong>${cidadeFormatada}</strong> — entrega garantida em <strong>até 2 dias úteis</strong>, com rastreio do começo ao fim.`
+    : `Confirme agora e seu kit chega onde você está — entrega garantida em <strong>até 2 dias úteis</strong>, com rastreio do começo ao fim.`;
 
   return `
     <p style="margin:0 0 16px;font-size:15px;color:#111827;font-weight:700;">Oi, ${primeiroNome}! 👋</p>
@@ -52,7 +52,7 @@ function buildEmail2(primeiroNome, localidade, cidadeFormatada, produtos, valorF
   return `
     <p style="margin:0 0 16px;font-size:15px;color:#111827;font-weight:700;">${primeiroNome}, ainda dá tempo! 🏆</p>
     <p style="margin:0 0 20px;font-size:14px;color:#374151;line-height:1.7;">
-      Desde que você visitou a loja, <strong>dezenas de clientes já garantiram o kit</strong> e estão esperando as figurinhas chegarem na porta.
+      Desde que você visitou a loja, <strong>dezenas de clientes já garantiram o kit</strong> e estão esperando o kit chegar na porta.
     </p>
     <div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:12px;padding:20px;margin:0 0 20px;text-align:center;">
       <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.5px;">✅ Seu pedido ainda está aqui</p>
@@ -91,7 +91,7 @@ function buildEmail3(primeiroNome, localidade, cidadeFormatada, produtos, valorF
     <div style="background:#fef2f2;border:2px solid #dc2626;border-radius:12px;padding:20px;margin:0 0 20px;text-align:center;">
       <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.5px;">⚡ Última chance de garantir</p>
       <p style="margin:0;font-size:18px;font-weight:900;color:#111827;line-height:1.3;">
-        ${localidade ? `Figurinhas em ${cidadeFormatada} em 2 dias` : "Figurinhas na sua porta em 2 dias"}
+        ${localidade ? `Seu kit em ${cidadeFormatada} em 2 dias` : "Seu kit na sua porta em 2 dias"}
       </p>
       <p style="margin:8px 0 0;font-size:13px;color:#6b7280;">Frete grátis · Entrega garantida · Rastreio incluso</p>
     </div>
@@ -174,13 +174,13 @@ export async function onRequest(context) {
     corpoHtml = buildEmail2(primeiroNome, localidade, cidadeFormatada, produtos, valorFormatado, ctaLabel, url);
   } else {
     assunto = cidadeFormatada
-      ? `⚽ ${primeiroNome}, falta 1 minuto — suas figurinhas chegam em 2 dias em ${cidadeFormatada}!`
-      : `⚽ ${primeiroNome}, suas figurinhas chegam em 2 dias — garanta agora!`;
+      ? `✨ ${primeiroNome}, falta 1 minuto — seu kit chega em 2 dias em ${cidadeFormatada}!`
+      : `✨ ${primeiroNome}, seu kit chega em 2 dias — garanta agora!`;
     corpoHtml = buildEmail1(primeiroNome, localidade, cidadeFormatada, produtos, valorFormatado, ctaLabel, url, status);
   }
 
   const headerSubtitles = {
-    1: cidadeFormatada ? `Suas figurinhas chegam em ${cidadeFormatada} em 2 dias. ⚡` : "Entrega em 2 dias, garantida. Só falta 1 clique. ⚡",
+    1: cidadeFormatada ? `Seu kit chega em ${cidadeFormatada} em 2 dias. ⚡` : "Entrega em 2 dias, garantida. Só falta 1 clique. ⚡",
     2: "Outros clientes já garantiram. Você ainda pode. 🏆",
     3: "Último aviso — seu kit vai para outra pessoa. ⚠️",
   };
@@ -189,7 +189,7 @@ export async function onRequest(context) {
   const garantiasHtml = `
     <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 8px;">
       <tr>
-        <td style="padding:6px 8px 6px 0;font-size:12px;color:#6b7280;">✅ <strong>Figurinhas 100% originais</strong> Panini</td>
+        <td style="padding:6px 8px 6px 0;font-size:12px;color:#6b7280;">✅ <strong>Kit Escova Secadora</strong> Bella Mix</td>
         <td style="padding:6px 0 6px 8px;font-size:12px;color:#6b7280;">🔒 Pagamento 100% seguro</td>
       </tr>
       <tr>
@@ -213,7 +213,7 @@ export async function onRequest(context) {
       <table width="100%" style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
         <tr>
           <td style="background:#dc2626;padding:28px 32px;text-align:center;">
-            <p style="margin:0;font-size:22px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">⚽ TopMix Brasil</p>
+            <p style="margin:0;font-size:22px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">✨ TopMix Brasil</p>
             <p style="margin:6px 0 0;font-size:14px;color:#fecaca;font-weight:700;">${headerSubtitle}</p>
           </td>
         </tr>
