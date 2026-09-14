@@ -38,12 +38,12 @@ export const products: Product[] = [
     "reviewCount": 347,
     "soldCount": "428 vendidos",
     "description": "Conheça a Escova Branca da nossa seleção de beleza. Confira as fotos para ver o produto e seus detalhes.",
-    "mainImage": "/images/escova-branca/Escova A1.avif",
+    "mainImage": "/images/escova-branca/Escova-A1.jpg",
     "gallery": [
-      "/images/escova-branca/Escova A1.avif",
-      "/images/escova-branca/Escova A2.avif",
-      "/images/escova-branca/Escova A3.avif",
-      "/images/escova-branca/Escova A4.avif"
+      "/images/escova-branca/Escova-A1.jpg",
+      "/images/escova-branca/Escova-A2.jpg",
+      "/images/escova-branca/Escova-A3.jpg",
+      "/images/escova-branca/Escova-A4.jpg"
     ],
     "features": [
       "Cor branca"
@@ -61,9 +61,9 @@ export const products: Product[] = [
     "reviewCount": 582,
     "soldCount": "693 vendidos",
     "description": "Escova modeladora preta com detalhes rosé, visor digital e controles de temperatura. Confira o produto nas fotos da galeria.",
-    "mainImage": "/images/escova-preta/Escova B1 (2).webp",
+    "mainImage": "/images/escova-preta/Escova B1 (2).png",
     "gallery": [
-      "/images/escova-preta/Escova B1 (2).webp",
+      "/images/escova-preta/Escova B1 (2).png",
       "/images/escova-preta/Escova B1 (1).webp",
       "/images/escova-preta/Escova B1 (1).jpg",
       "/images/escova-preta/Escova B1 (2).jpg",
