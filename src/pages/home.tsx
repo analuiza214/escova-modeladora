@@ -296,9 +296,9 @@ export default function Home() {
       <section className="py-8 bg-gray-50 px-4">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-4">
-            <span className="inline-block text-xs font-black tracking-widest uppercase text-red-600 mb-1">▶ Assista antes de comprar</span>
-            <h2 className="text-xl sm:text-2xl font-black text-gray-900">Por que o preço está tão baixo?</h2>
-            <p className="text-sm text-gray-500 mt-1">Entenda como conseguimos oferecer o menor preço do mercado</p>
+            <span className="inline-block text-xs font-black tracking-widest uppercase text-red-600 mb-1">▶ Veja o resultado antes de comprar</span>
+            <h2 className="text-xl sm:text-2xl font-black text-gray-900">Alise e modele seu cabelo sem sair de casa</h2>
+            <p className="text-sm text-gray-500 mt-1">Veja na prática como deixar os fios alinhados, modelados e com acabamento de salão</p>
           </div>
           <div className="rounded-2xl overflow-hidden shadow-lg"
             style={{ border: "2px solid #e5e7eb", boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}>
