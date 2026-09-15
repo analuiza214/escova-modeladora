@@ -29,7 +29,7 @@ git push
 |---|---|
 | Framework preset | Vite |
 | Build command | `npm run build` |
-| Build output directory | `dist` |
+| Build output directory | `dist/public` |
 | Node.js version | `20` |
 
 ### 4. Configure as variáveis de ambiente
