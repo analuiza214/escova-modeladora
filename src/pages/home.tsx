@@ -302,7 +302,7 @@ export default function Home() {
           </div>
           <div className="rounded-2xl overflow-hidden shadow-lg"
             style={{ border: "2px solid #e5e7eb", boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}>
-            <WistiaPlayer mediaId="5hq52h0zlz" aspect={0.5625} />
+            <WistiaPlayer mediaId="o0w64h2349" aspect={0.5625} />
           </div>
         </div>
       </section>
