@@ -122,6 +122,7 @@ export async function onRequest(context) {
     // FASE A — AUTO-START: PIX gerado ha 30+ min, sem email enviado
     // ============================================================
     const queryNew = [
+      `produtos=ilike.*Escova*`,
       `status=eq.pix_gerado`,
       NAO_INICIADO,
       `created_at=lte.${encodeURIComponent(cutoff30min)}`,
@@ -141,7 +142,7 @@ export async function onRequest(context) {
       const emailList = emails.map(e => `"${e.replace(/[",()]/g, "")}"`).join(",");
       const { status: dedupStatus, body: jaTratados } = await supabaseFetch(
         SUPABASE_URL, SUPABASE_KEY,
-        `/rest/v1/leads?email=in.(${encodeURIComponent(emailList)})&or=(recovery_count.gte.1,status.eq.pago)&select=email`
+        `/rest/v1/leads?produtos=ilike.*Escova*&email=in.(${encodeURIComponent(emailList)})&or=(recovery_count.gte.1,status.eq.pago)&select=email`
       );
 
       if (dedupStatus >= 400 || !Array.isArray(jaTratados)) {
@@ -199,6 +200,7 @@ export async function onRequest(context) {
     // FASE B — FOLLOW-UPS: emails 2 e 3 agendados
     // ============================================================
     const queryFollow = [
+      `produtos=ilike.*Escova*`,
       `recovery_count=gte.1`,
       `recovery_count=lte.2`,
       `recovery_next_at=lte.${encodeURIComponent(now)}`,

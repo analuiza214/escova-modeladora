@@ -156,7 +156,7 @@ export async function listPendingPixLeads(env, limit = 50) {
   const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const response = await supabaseRequest(
     env,
-    `leads?metodo_pagamento=eq.pix&status=in.(checkout_iniciado,pix_gerado)&transaction_id=not.is.null&created_at=gte.${encodeURIComponent(since)}&select=id,transaction_id,gateway,status&order=created_at.desc&limit=${Math.min(Math.max(limit, 1), 100)}`,
+    `leads?produtos=ilike.*Escova*&metodo_pagamento=eq.pix&status=in.(checkout_iniciado,pix_gerado)&transaction_id=not.is.null&created_at=gte.${encodeURIComponent(since)}&select=id,transaction_id,gateway,status&order=created_at.desc&limit=${Math.min(Math.max(limit, 1), 100)}`,
   );
   const rows = await response.json();
   return Array.isArray(rows) ? rows : [];

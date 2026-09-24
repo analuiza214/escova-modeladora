@@ -16,6 +16,10 @@ export async function onRequest({ request, env }) {
     siteUrl: !!String(env.SITE_URL || "").trim(),
     pixRateLimit: !!env.PIX_RATELIMIT,
   };
+  let databaseProject = null;
+  try {
+    databaseProject = new URL(String(env.SUPABASE_URL || "")).hostname.split(".")[0] || null;
+  } catch { /* URL ausente ou inválida */ }
 
   let gateways = [];
   let activePixGateway = null;
@@ -38,6 +42,7 @@ export async function onRequest({ request, env }) {
   return new Response(JSON.stringify({
     ok,
     store: "Bella Mix",
+    databaseProject,
     requiredServerConfig,
     activePixGateway,
     pixGateways,

@@ -42,8 +42,8 @@ export async function onRequest({ request, env }) {
     if (request.method === "GET") {
       const leadId = new URL(request.url).searchParams.get("id");
       const query = leadId
-        ? `leads?id=eq.${encodeURIComponent(leadId)}&select=*&limit=1`
-        : "leads?select=*&order=created_at.desc";
+        ? `leads?id=eq.${encodeURIComponent(leadId)}&produtos=ilike.*Escova*&select=*&limit=1`
+        : "leads?produtos=ilike.*Escova*&select=*&order=created_at.desc";
       const rows = await jsonResponse(await supabase(env, query));
       return new Response(JSON.stringify(leadId ? (rows?.[0] || null) : (rows || [])), { headers: HEADERS });
     }
@@ -57,7 +57,7 @@ export async function onRequest({ request, env }) {
         Object.entries(body.changes).filter(([key]) => ALLOWED_CHANGES.has(key)),
       );
       changes.updated_at = new Date().toISOString();
-      const rows = await jsonResponse(await supabase(env, `leads?id=eq.${encodeURIComponent(body.id)}&select=*`, {
+      const rows = await jsonResponse(await supabase(env, `leads?id=eq.${encodeURIComponent(body.id)}&produtos=ilike.*Escova*&select=*`, {
         method: "PATCH",
         headers: { Prefer: "return=representation" },
         body: JSON.stringify(changes),
