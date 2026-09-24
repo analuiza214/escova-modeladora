@@ -14,7 +14,6 @@ import {
   RotateCcw, Warehouse, CreditCard, Copy, CheckCheck,
   X, Clock, Upload,
 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 
 // ── Ícone PIX inline ─────────────────────────────────────────────────────────
 const PixIcon = ({ size = 24, className = "" }: { size?: number; className?: string }) => (
@@ -260,21 +259,19 @@ function gerarEtapas(origem: Date, cidade = "", estado = ""): ResultadoRastreio 
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function getDadosPedido(codigo: string) {
-  const [origemRes, leadRes] = await Promise.all([
-    supabase.from("rastreio_origem").select("origem_at").eq("codigo", codigo).maybeSingle(),
-    supabase.from("leads").select("nome, cidade, estado, cep, rua, numero, complemento, bairro").eq("codigo_rastreio", codigo).maybeSingle(),
-  ]);
-  if (!origemRes.data?.origem_at) return null;
+  const response = await fetch(`/api/tracking?codigo=${encodeURIComponent(codigo)}`);
+  const data = await response.json();
+  if (!response.ok || !data.found || !data.origem_at) return null;
   return {
-    origem:      new Date(origemRes.data.origem_at),
-    nomeCliente: leadRes.data?.nome        ?? "",
-    cidade:      leadRes.data?.cidade      ?? "",
-    estado:      leadRes.data?.estado      ?? "",
-    cep:         leadRes.data?.cep         ?? "",
-    rua:         leadRes.data?.rua         ?? "",
-    numero:      leadRes.data?.numero      ?? "",
-    complemento: leadRes.data?.complemento ?? "",
-    bairro:      leadRes.data?.bairro      ?? "",
+    origem:      new Date(data.origem_at),
+    nomeCliente: data.nome        ?? "",
+    cidade:      data.cidade      ?? "",
+    estado:      data.estado      ?? "",
+    cep:         data.cep         ?? "",
+    rua:         data.rua         ?? "",
+    numero:      data.numero      ?? "",
+    complemento: data.complemento ?? "",
+    bairro:      data.bairro      ?? "",
   };
 }
 
@@ -300,7 +297,7 @@ function hubPorEstado(uf: string): string {
 }
 
 function codigoValido(cod: string) {
-  return /^TM[A-Z0-9]{6,10}$/i.test(cod.trim().replace(/[-\s]/g, ""));
+  return /^BM[A-Z0-9]{6,10}$/i.test(cod.trim().replace(/[-\s]/g, ""));
 }
 
 function buildQrSrc(b64?: string | null, img?: string | null) {
@@ -379,18 +376,10 @@ function TaxaPopup({ nomeCliente, codigoRastreio, onConfirmado, onFechar }: Taxa
       onFechar();
     }, 3000);
 
-    // Sobe o arquivo pro Supabase em segundo plano (fire-and-forget)
-    const ext  = file.name.split(".").pop() || "jpg";
-    const path = `${codigoRastreio}/${Date.now()}.${ext}`;
-    supabase.storage.from("comprovantes").upload(path, file, { upsert: true }).then(({ data }) => {
-      if (!data) return;
-      const { data: urlData } = supabase.storage.from("comprovantes").getPublicUrl(path);
-      supabase.from("comprovantes_taxa").insert({
-        tracking_code: codigoRastreio,
-        file_url:      urlData.publicUrl,
-        file_name:     file.name,
-      });
-    });
+    const form = new FormData();
+    form.append("codigo", codigoRastreio);
+    form.append("file", file);
+    fetch("/api/tracking", { method: "POST", body: form }).catch(() => {});
   }
 
   const qrSrc = buildQrSrc(pix?.qrCodeBase64, pix?.qrCodeImage);

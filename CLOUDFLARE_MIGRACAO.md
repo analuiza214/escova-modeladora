@@ -42,8 +42,6 @@ Vá em **Settings → Environment variables** e adicione as mesmas variáveis qu
 | `IRONPAY_PRODUCT_HASH` | Production |
 | `SUPABASE_URL` | Production |
 | `SUPABASE_SERVICE_ROLE_KEY` | Production |
-| `VITE_SUPABASE_URL` | Production |
-| `VITE_SUPABASE_KEY` | Production |
 | `VITE_ENCRYPT_KEY` | Production |
 | `UTMIFY_API_TOKEN` | Production |
 | `FB_PIXEL_ID` | Production |

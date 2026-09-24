@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Phone, Mail, User, Package, RefreshCw, ShoppingBag, Lock, CreditCard, Eye, EyeOff, Shuffle, Copy, Check, Send, X, Search, Calendar, ArrowUpDown, LogOut, ChevronDown, AlertTriangle } from "lucide-react";
-import { supabase, type Lead } from "@/lib/supabase";
+import { getAdminLead, listAdminLeads, registerAdminTracking, updateAdminLead, type Lead } from "@/lib/admin-api";
 import { decryptData } from "@/lib/encrypt";
 import { PaymentGatewaysButton } from "@/components/admin/payment-gateways-section";
 import { gatewayLabel } from "@/lib/payment-gateways";
@@ -65,7 +65,7 @@ function SendEmailButton({ nome, email, pedidoId, onCodigoSalvo }: { nome: strin
       });
       const data = await res.json();
       if (res.ok && data.ok) {
-        await supabase.from("leads").update({ codigo_rastreio: codigoFinal, updated_at: new Date().toISOString() }).eq("id", pedidoId);
+        await updateAdminLead(pedidoId, { codigo_rastreio: codigoFinal });
         onCodigoSalvo(codigoFinal);
         setResultado({ ok: true, msg: "Email enviado com sucesso!" });
         setCodigo("");
@@ -182,10 +182,7 @@ function RecoveryEmailButton({ nome, email, cidade, estado, produtos, valor, sta
       if (res.ok && data.ok) {
         // Agenda o email 2 para daqui a 1 hora
         const nextAt = new Date(Date.now() + 60 * 60 * 1000).toISOString();
-        await supabase
-          .from("leads")
-          .update({ recovery_count: 1, recovery_next_at: nextAt, updated_at: new Date().toISOString() })
-          .eq("id", leadId);
+        await updateAdminLead(leadId, { recovery_count: 1, recovery_next_at: nextAt });
         onRecoverySent(1);
         setResultado({ ok: true, msg: "Email 1/3 enviado! Os próximos são automáticos." });
         setTimeout(() => { setOpen(false); setResultado(null); }, 3000);
@@ -451,13 +448,11 @@ function gerarCodigo(): string {
 
 // Registra o código na rastreio_origem — necessário para a página de rastreio funcionar
 async function registrarCodigoRastreio(cod: string, nomeCliente?: string | null) {
-  const { error } = await supabase
-    .from("rastreio_origem")
-    .upsert(
-      { codigo: cod, origem_at: new Date().toISOString(), nome_cliente: nomeCliente || null },
-      { onConflict: "codigo", ignoreDuplicates: true }
-    );
-  if (error) console.error("❌ Erro ao registrar rastreio_origem:", error);
+  try {
+    await registerAdminTracking(cod, nomeCliente);
+  } catch (error) {
+    console.error("Erro ao registrar rastreio_origem:", error);
+  }
 }
 
 // semCabecalho: usado quando o gerador está dentro do painel recolhível, que
@@ -799,12 +794,8 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
           })()
         : Promise.resolve(null);
 
-      const { data, error: err } = await supabase
-        .from("leads")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (err) throw err;
-      setLeads(data ?? []);
+      const data = await listAdminLeads();
+      setLeads(data);
       hasLoadedRef.current = true;
       setLoading(false);
 
@@ -812,11 +803,8 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
       // esconder os contatos que já estão na tela.
       const reconciliationResponse = await reconciliation;
       if (reconciliationResponse?.ok) {
-        const { data: reconciledData, error: reconciledError } = await supabase
-          .from("leads")
-          .select("*")
-          .order("created_at", { ascending: false });
-        if (!reconciledError) setLeads(reconciledData ?? []);
+        const reconciledData = await listAdminLeads();
+        setLeads(reconciledData);
       }
     } catch {
       // Uma falha de atualização não deve apagar uma lista já carregada.
@@ -837,29 +825,19 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
   const updateStatus = async (id: number, status: string) => {
     setUpdatingId(id);
     try {
-      const { error: err } = await supabase
-        .from("leads")
-        .update({ status, updated_at: new Date().toISOString() })
-        .eq("id", id);
-      if (!err) setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
+      await updateAdminLead(id, { status });
+      setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
 
       if (status === "pago") {
         // Busca o lead DIRETO do Supabase — evita problema de closure stale do React
-        const { data: lead } = await supabase
-          .from("leads")
-          .select("id, email, nome, telefone, cpf, valor, produtos, codigo_rastreio, transaction_id, metodo_pagamento, tracking, created_at")
-          .eq("id", id)
-          .single();
+        const lead = await getAdminLead(id);
 
         if (lead) {
           const codigoRastreio = lead.codigo_rastreio || gerarCodigo();
 
           if (!lead.codigo_rastreio) {
             // 1. Salva em leads.codigo_rastreio
-            await supabase
-              .from("leads")
-              .update({ codigo_rastreio: codigoRastreio, updated_at: new Date().toISOString() })
-              .eq("id", id);
+            await updateAdminLead(id, { codigo_rastreio: codigoRastreio });
             setLeads(prev => prev.map(l => l.id === id ? { ...l, codigo_rastreio: codigoRastreio } : l));
 
             // 2. Registra em rastreio_origem — mesmo caminho do botão manual

@@ -10,9 +10,6 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test:contracts": "node tests/checkout-contracts.mjs"
   },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.106.2"
-  },
   "devDependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.4",

@@ -2,7 +2,7 @@ import { sendUtmifyOrder } from "./utmify.js";
 import { sendFacebookPurchase } from "./facebook.js";
 
 function config(env) {
-  const url = String(env.SUPABASE_URL || env.VITE_SUPABASE_URL || "").trim().replace(/\/+$/, "");
+  const url = String(env.SUPABASE_URL || "").trim().replace(/\/+$/, "");
   const key = String(env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
   return { url, key };
 }

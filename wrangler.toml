@@ -36,8 +36,6 @@ id      = "44122051ba9a4c83a7d09019a3671894"
 #   ADMIN_SESSION_SECRET
 #   SUPABASE_URL
 #   SUPABASE_SERVICE_ROLE_KEY
-#   VITE_SUPABASE_URL
-#   VITE_SUPABASE_KEY
 #   VITE_ENCRYPT_KEY
 #   VITE_GTM_ID               <- ID público do Google Tag Manager da Bella Mix
 #   VITE_GA_ID                <- ID público do Google Analytics 4 da Bella Mix
