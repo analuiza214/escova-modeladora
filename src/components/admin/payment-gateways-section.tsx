@@ -5,7 +5,7 @@ import { GATEWAY_METHOD_LABELS } from "@/lib/payment-gateways";
 
 const ADMIN_TOKEN_KEY = "adm_token";
 
-/** Valores iniciais — a lista já aparece mesmo antes da consulta ao banco */
+/** Valores de recuperação, usados apenas quando a tabela ainda não foi criada. */
 const DEFAULT_GATEWAYS: PaymentGateway[] = [
   { id: "ironpay", name: "IronPay", method: "pix", enabled: true, configured: true },
   { id: "masterfy", name: "MasterFy", method: "pix", enabled: false, configured: true },
@@ -108,7 +108,7 @@ export function PaymentGatewaysButton() {
  * Também pode ser usado solto na página, sem a prop onClose.
  */
 export function PaymentGatewaysSection({ onClose }: { onClose?: () => void }) {
-  const [gateways, setGateways] = useState<PaymentGateway[]>(DEFAULT_GATEWAYS);
+  const [gateways, setGateways] = useState<PaymentGateway[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [needsSql, setNeedsSql] = useState(false);
@@ -285,7 +285,12 @@ export function PaymentGatewaysSection({ onClose }: { onClose?: () => void }) {
       )}
 
       <div className="space-y-2">
-        {grupos.map(([name, list]) => (
+        {loading && gateways.length === 0 ? (
+          <div className="flex items-center justify-center gap-2 py-10 text-sm text-gray-500">
+            <RefreshCw className="h-4 w-4 animate-spin" />
+            Carregando configuração dos gateways...
+          </div>
+        ) : grupos.map(([name, list]) => (
           <div key={name} className="px-4 py-3 rounded-xl border border-gray-100 bg-gray-50">
             <div className="flex items-center gap-2 mb-2">
               <span className="font-bold text-sm text-gray-900">{name}</span>
