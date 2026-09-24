@@ -11,6 +11,10 @@ import Home from "@/pages/home";
 
 const Product = lazy(() => import("@/pages/product"));
 const Cart = lazy(() => import("@/pages/cart"));
+const Checkout = lazy(() => import("@/pages/checkout"));
+const Success = lazy(() => import("@/pages/success"));
+const RastrearPedido = lazy(() => import("@/pages/rastrear-pedido"));
+const Admin = lazy(() => import("@/pages/admin"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 const PoliticaDeTrocas = lazy(() => import("@/pages/politica-de-trocas"));
 const DuvidasFrequentes = lazy(() => import("@/pages/duvidas-frequentes"));
@@ -46,6 +50,10 @@ function Router() {
             <Route path="/" component={Home} />
             <Route path="/produto/:slug" component={Product} />
             <Route path="/carrinho" component={Cart} />
+            <Route path="/checkout" component={Checkout} />
+            <Route path="/sucesso" component={Success} />
+            <Route path="/rastrear-pedido" component={RastrearPedido} />
+            <Route path="/admin" component={Admin} />
             <Route path="/politica-de-trocas" component={PoliticaDeTrocas} />
             <Route path="/duvidas-frequentes" component={DuvidasFrequentes} />
             <Route path="/fale-conosco" component={FaleConosco} />
