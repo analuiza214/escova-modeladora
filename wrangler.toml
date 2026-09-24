@@ -2,7 +2,7 @@
 # Este arquivo e usado para deploy via CLI (wrangler) ou GitHub Actions.
 # No painel do Cloudflare Pages, configure as variaveis de ambiente manualmente.
 
-name = "loja-top-mix"
+name = "bella-mix"
 compatibility_date = "2024-01-01"
 pages_build_output_dir = "dist/public"
 
@@ -47,5 +47,5 @@ id      = "44122051ba9a4c83a7d09019a3671894"
 #   FB_ACCESS_TOKEN
 #   RESEND_API_KEY
 #   RESEND_FROM_EMAIL
-#   SITE_URL             <- URL do seu site (ex: https://loja-top-mix.pages.dev)
+#   SITE_URL             <- URL pública do site da Bella Mix
 #   CRON_SECRET          <- segredo opcional para proteger /api/process-recovery-queue

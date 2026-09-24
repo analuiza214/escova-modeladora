@@ -50,7 +50,7 @@ Vá em **Settings → Environment variables** e adicione as mesmas variáveis qu
 | `FB_ACCESS_TOKEN` | Production |
 | `RESEND_API_KEY` | Production |
 | `RESEND_FROM_EMAIL` | Production |
-| `SITE_URL` | Production ← **NOVA**: coloque a URL do seu site (ex: `https://loja-top-mix.pages.dev`) |
+| `SITE_URL` | Production ← **NOVA**: coloque a URL pública do site da Bella Mix |
 | `CRON_SECRET` | Production ← **NOVA** (opcional): qualquer senha para proteger o cron |
 
 ### 5. Configure o cron de recuperação de emails

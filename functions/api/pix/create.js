@@ -4,9 +4,10 @@
 // ativo no painel admin.
 //
 // Fluxo:
-//   1. Rate limit por IP (KV binding: PIX_RATELIMIT)
-//   2. Consulta qual gateway PIX está ativo (Supabase → payment_gateways)
+//   1. Valida o pedido e escolhe um gateway configurado
+//   2. Verifica o limite por IP (KV binding: PIX_RATELIMIT)
 //   3. Delega para ironpay.js, masterfy.js, umbrellapag.js ou venuspay.js
+//   4. Conta somente cobranças geradas com sucesso
 
 import { getActivePixGateway } from "../../_lib/gateway-config.js";
 import { createPixIronpay } from "../../_lib/pix-gateways/ironpay.js";
@@ -34,46 +35,6 @@ export async function onRequest(context) {
   if (request.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: corsHeaders });
   }
-
-  // ──────────────────────────────────────────────────────────────
-  // PROTEÇÃO POR IP — Cloudflare KV
-  // ──────────────────────────────────────────────────────────────
-  if (env.PIX_RATELIMIT) {
-    // CF-Connecting-IP é o IP real do visitante injetado pelo Cloudflare
-    const ip = request.headers.get("CF-Connecting-IP") ||
-               request.headers.get("X-Forwarded-For")?.split(",")[0]?.trim() ||
-               "unknown";
-
-    const kvKey = `ratelimit:pix:${ip}`;
-
-    try {
-      // Lê o contador atual (retorna null se não existe)
-      const atual = await env.PIX_RATELIMIT.get(kvKey);
-      const contagem = atual ? parseInt(atual, 10) : 0;
-
-      if (contagem >= LIMITE_TENTATIVAS) {
-        console.log(`[RATE LIMIT] IP bloqueado: ${ip} — ${contagem} tentativas`);
-        return new Response(
-          JSON.stringify({
-            error: "Muitas tentativas. Aguarde 1 hora antes de tentar novamente.",
-            bloqueado: true,
-          }),
-          { status: 429, headers: corsHeaders }
-        );
-      }
-
-      // Incrementa o contador; se for a primeira vez, define o TTL de 1 hora
-      await env.PIX_RATELIMIT.put(kvKey, String(contagem + 1), {
-        expirationTtl: JANELA_SEGUNDOS,
-      });
-
-      console.log(`[RATE LIMIT] IP: ${ip} — tentativa ${contagem + 1}/${LIMITE_TENTATIVAS}`);
-    } catch (kvErr) {
-      // Se o KV falhar por algum motivo, não bloqueia o cliente (fail open)
-      console.error("[RATE LIMIT] Erro ao verificar KV:", kvErr);
-    }
-  }
-  // ──────────────────────────────────────────────────────────────
 
   // ── Parse do body (lido uma vez aqui e repassado ao provider) ──
   let body;
@@ -103,9 +64,30 @@ export async function onRequest(context) {
 
   if (!activeGateway) {
     return new Response(
-      JSON.stringify({ error: "Nenhum gateway PIX ativo. Ative um gateway no painel admin." }),
+      JSON.stringify({ error: "Nenhum gateway PIX possui todas as credenciais necessárias." }),
       { status: 503, headers: corsHeaders }
     );
+  }
+
+  const ip = request.headers.get("CF-Connecting-IP") ||
+             request.headers.get("X-Forwarded-For")?.split(",")[0]?.trim() ||
+             "unknown";
+  // v2 desconsidera contadores antigos que incluíam chamadas com falha.
+  const kvKey = `ratelimit:pix:v2:${ip}`;
+  let currentCount = 0;
+  if (env.PIX_RATELIMIT) {
+    try {
+      const current = await env.PIX_RATELIMIT.get(kvKey);
+      currentCount = current ? Number.parseInt(current, 10) || 0 : 0;
+      if (currentCount >= LIMITE_TENTATIVAS) {
+        return new Response(
+          JSON.stringify({ error: "Muitas cobranças PIX geradas. Aguarde 1 hora antes de tentar novamente.", bloqueado: true }),
+          { status: 429, headers: corsHeaders },
+        );
+      }
+    } catch (kvError) {
+      console.error("[RATE LIMIT] Erro ao consultar KV:", kvError);
+    }
   }
 
   let response;
@@ -118,6 +100,13 @@ export async function onRequest(context) {
   try {
     const result = await response.clone().json();
     await savePixLead(env, safeBody, result, activeGateway);
+    if (env.PIX_RATELIMIT) {
+      try {
+        await env.PIX_RATELIMIT.put(kvKey, String(currentCount + 1), { expirationTtl: JANELA_SEGUNDOS });
+      } catch (kvError) {
+        console.error("[RATE LIMIT] Erro ao registrar cobrança no KV:", kvError);
+      }
+    }
     try {
       await sendUtmifyOrder(env, {
         orderId: result.transactionId,

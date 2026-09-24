@@ -1,5 +1,5 @@
 -- Tabela de configuração dos gateways de pagamento
--- Execute no SQL Editor do Supabase (projeto da loja TopMix)
+-- Execute no SQL Editor do Supabase (projeto da Bella Mix)
 
 CREATE TABLE IF NOT EXISTS payment_gateways (
   id          TEXT PRIMARY KEY,

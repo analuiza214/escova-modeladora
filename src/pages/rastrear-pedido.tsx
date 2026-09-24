@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// rastrear-pedido.tsx — TopMix Brasil
+// rastrear-pedido.tsx — Bella Mix
 //
 // Fluxo de 15 dias. No dia 15 aparece o botão de taxa de reenvio.
 // Todo o fluxo de pagamento (QR Pix → upload comprovante → confirmação)

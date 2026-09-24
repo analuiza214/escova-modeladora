@@ -100,7 +100,7 @@ const WHATSAPP_NUMBER = "5583991297085";
 
 function loadPixAttempts(): number {
   try {
-    const saved = JSON.parse(localStorage.getItem("topmix_pix_tentativas") || "null") as { name: string; count: number } | null;
+    const saved = JSON.parse(localStorage.getItem("bellamix_pix_tentativas") || "null") as { name: string; count: number } | null;
     return saved?.count || 0;
   } catch {
     return 0;
@@ -110,7 +110,7 @@ function loadPixAttempts(): number {
 function whatsappHelpLink(): string {
   let nome = "";
   try {
-    const saved = JSON.parse(localStorage.getItem("topmix_pix_tentativas") || "null") as { name: string; count: number } | null;
+    const saved = JSON.parse(localStorage.getItem("bellamix_pix_tentativas") || "null") as { name: string; count: number } | null;
     nome = saved?.name || "";
   } catch { /* ignora */ }
   const msg = `Olá! ${nome ? `Meu nome é ${nome}. ` : ""}Gerei o Pix mais de uma vez no site e não estou conseguindo finalizar o pagamento. Pode me ajudar?`;
@@ -119,7 +119,7 @@ function whatsappHelpLink(): string {
 
 function loadCardAttempts(): number {
   try {
-    const saved = JSON.parse(localStorage.getItem("topmix_card_tentativas") || "null") as { last4: string; count: number } | null;
+    const saved = JSON.parse(localStorage.getItem("bellamix_card_tentativas") || "null") as { last4: string; count: number } | null;
     return saved?.count || 0;
   } catch {
     return 0;
@@ -129,7 +129,7 @@ function loadCardAttempts(): number {
 function whatsappCardHelpLink(last4: string): string {
   let nome = "";
   try {
-    const buyer = JSON.parse(localStorage.getItem("topmix_buyer") || "null") as { nome?: string } | null;
+    const buyer = JSON.parse(localStorage.getItem("bellamix_buyer") || "null") as { nome?: string } | null;
     nome = buyer?.nome || "";
   } catch { /* ignora */ }
   const msg = `Olá! ${nome ? `Meu nome é ${nome}. ` : ""}Tentei pagar com meu cartão (final ${last4}) mais de uma vez no site e não foi autorizado. Pode me ajudar?`;

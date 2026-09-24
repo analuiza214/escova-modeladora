@@ -6,6 +6,8 @@ export default function FaleConosco() {
   const [form, setForm] = useState({ nome: "", email: "", assunto: "", mensagem: "" });
   const [enviado, setEnviado] = useState(false);
   const [loading, setLoading] = useState(false);
+  const supportPhone = String(import.meta.env.VITE_SUPPORT_WHATSAPP || "").replace(/\D/g, "");
+  const supportEmail = String(import.meta.env.VITE_SUPPORT_EMAIL || "").trim();
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -26,17 +28,17 @@ export default function FaleConosco() {
       icone: MessageCircle,
       titulo: "WhatsApp",
       descricao: "Atendimento rápido de seg. a sáb.",
-      detalhe: "(83) 99129-7085",
+      detalhe: supportPhone ? "Falar com a equipe" : "Use o formulário abaixo",
       cor: "#25D366",
-      href: "https://wa.me/5583991297085",
+      href: supportPhone ? `https://wa.me/${supportPhone}` : null,
     },
     {
       icone: Mail,
       titulo: "E-mail",
       descricao: "Respondemos em até 24h úteis",
-      detalhe: "contato@topmixbrasil.com.br",
+      detalhe: supportEmail || "Use o formulário abaixo",
       cor: "#E09400",
-      href: "mailto:contato@topmixbrasil.com.br",
+      href: supportEmail ? `mailto:${supportEmail}` : null,
     },
     {
       icone: Clock,

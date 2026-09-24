@@ -37,24 +37,30 @@ async function supabaseFetch(env, path, options = {}) {
 
 export function gatewayConfigured(env, id) {
   if (id === "ironpay") {
-    return !!(env.IRONPAY_API_TOKEN && env.IRONPAY_OFFER_HASH && env.IRONPAY_PRODUCT_HASH);
+    return [env.IRONPAY_API_TOKEN, env.IRONPAY_OFFER_HASH, env.IRONPAY_PRODUCT_HASH]
+      .every((value) => String(value || "").trim());
   }
   if (id === "masterfy") {
-    return !!env.MASTERFY_API_KEY;
+    return !!String(env.MASTERFY_API_KEY || "").trim();
   }
   if (id === "umbrellapag") {
-    return !!env.UMBRELLAPAG_API_KEY;
+    return !!String(env.UMBRELLAPAG_API_KEY || "").trim();
   }
   // Cartão e PIX da Venus Pay usam a mesma credencial
   if (id === "venuspay" || id === "venuspay_pix") {
-    return !!env.VENUS_PAY_SECRET_KEY;
+    return !!String(env.VENUS_PAY_SECRET_KEY || "").trim();
   }
   return false;
 }
 
 export async function listGateways(env) {
   const rows = await supabaseFetch(env, "/rest/v1/payment_gateways?select=id,name,method,enabled,updated_at&order=method,id");
-  const source = Array.isArray(rows) && rows.length > 0 ? rows : DEFAULT_GATEWAYS;
+  const saved = Array.isArray(rows) ? rows : [];
+  const savedById = new Map(saved.map((gateway) => [gateway.id, gateway]));
+  const source = DEFAULT_GATEWAYS.map((gateway) => ({
+    ...gateway,
+    ...(savedById.get(gateway.id) || {}),
+  }));
 
   return source.map((g) => ({
     id: g.id,
@@ -68,8 +74,13 @@ export async function listGateways(env) {
 
 export async function getActivePixGateway(env) {
   const gateways = await listGateways(env);
-  const active = gateways.find((g) => g.method === "pix" && g.enabled);
-  return active?.id ?? null;
+  const activeConfigured = gateways.find((g) => g.method === "pix" && g.enabled && g.configured);
+  if (activeConfigured) return activeConfigured.id;
+
+  // Recupera automaticamente uma configuração válida quando o banco ainda
+  // aponta para um gateway antigo ou sem as credenciais necessárias.
+  const configuredFallback = gateways.find((g) => g.method === "pix" && g.configured);
+  return configuredFallback?.id ?? null;
 }
 
 export async function setGatewayEnabled(env, id, enabled) {

@@ -3,7 +3,7 @@
 // NUNCA expõe a senha no código-fonte — tudo fica nas env vars do painel.
 //
 // Variáveis de ambiente necessárias (configure em Cloudflare Pages → Settings → Environment variables):
-//   ADMIN_USER            — nome de usuário do admin (ex: "topmix_admin")
+//   ADMIN_USER            — nome de usuário do admin (ex: "bellamix_admin")
 //   ADMIN_PASS            — senha do admin (use algo longo e aleatório)
 //   ADMIN_SESSION_SECRET  — segredo para assinar os tokens de sessão (64+ caracteres aleatórios)
 

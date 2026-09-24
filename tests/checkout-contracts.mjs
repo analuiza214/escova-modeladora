@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { cardAmount, validateCartItems } from "../functions/_lib/catalog.js";
 import { onRequest as createOrder } from "../functions/api/orders/create.js";
 import { onRequest as createCard } from "../functions/api/card/create.js";
+import { getActivePixGateway, listGateways } from "../functions/_lib/gateway-config.js";
 
 const whiteBrush = validateCartItems([{ id: "bella-escova-branca", quantity: 1 }], "card");
 assert.equal(whiteBrush.amount, 69.9);
@@ -14,6 +15,29 @@ assert.equal(cardAmount(129.9, 6), 155.02);
 assert.throws(() => validateCartItems([{ id: "produto-inventado", quantity: 1 }], "pix"));
 
 const originalFetch = globalThis.fetch;
+
+globalThis.fetch = async (url) => {
+  if (String(url).includes("payment_gateways")) {
+    return new Response(JSON.stringify([
+      { id: "ironpay", name: "IronPay", method: "pix", enabled: true },
+    ]), { status: 200 });
+  }
+  throw new Error(`Chamada inesperada no teste: ${url}`);
+};
+
+try {
+  const env = {
+    SUPABASE_URL: "https://supabase.test",
+    SUPABASE_SERVICE_ROLE_KEY: "service-role-test",
+    VENUS_PAY_SECRET_KEY: "venus-secret-test",
+  };
+  const gateways = await listGateways(env);
+  assert.equal(gateways.some((gateway) => gateway.id === "venuspay_pix"), true);
+  assert.equal(await getActivePixGateway(env), "venuspay_pix");
+} finally {
+  globalThis.fetch = originalFetch;
+}
+
 const writes = [];
 globalThis.fetch = async (_url, options = {}) => {
   if (options.method === "POST") {

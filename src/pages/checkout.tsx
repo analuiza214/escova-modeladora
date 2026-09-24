@@ -127,11 +127,11 @@ export default function Checkout() {
   }, []);
 
   useEffect(() => {
-    const saved = localStorage.getItem("topmix_buyer");
+    const saved = localStorage.getItem("bellamix_buyer");
     if (saved) {
       try { setBuyer(JSON.parse(saved)); } catch { /* ignored */ }
     }
-    const savedAddr = localStorage.getItem("topmix_address_loja");
+    const savedAddr = localStorage.getItem("bellamix_address_loja");
     if (savedAddr) {
       try { setAddress(JSON.parse(savedAddr)); } catch { /* ignored */ }
     }
@@ -237,8 +237,8 @@ export default function Checkout() {
     }
     setProcessing(true);
 
-    localStorage.setItem("topmix_buyer", JSON.stringify(buyer));
-    localStorage.setItem("topmix_address_loja", JSON.stringify(address));
+    localStorage.setItem("bellamix_buyer", JSON.stringify(buyer));
+    localStorage.setItem("bellamix_address_loja", JSON.stringify(address));
 
     if (paymentMethod === "pix") {
       pushEcommerceEvent("add_payment_info", {
@@ -340,7 +340,7 @@ export default function Checkout() {
 
       // ── Contador de tentativas com o mesmo cartão (mesmo aparelho) ──
       try {
-        const key = "topmix_card_tentativas";
+        const key = "bellamix_card_tentativas";
         const cardLast4 = cardDigits.slice(-4);
         const saved = JSON.parse(localStorage.getItem(key) || "null") as { last4: string; count: number } | null;
         const count = saved && saved.last4 === cardLast4 ? saved.count + 1 : 1;
@@ -387,7 +387,7 @@ export default function Checkout() {
         }
         // ── Contador de tentativas de PIX (mesmo aparelho + mesmo nome) ──
         try {
-          const key = "topmix_pix_tentativas";
+          const key = "bellamix_pix_tentativas";
           const saved = JSON.parse(localStorage.getItem(key) || "null") as { name: string; count: number } | null;
           const buyerName = buyer.nome.trim().toLowerCase();
           const count = saved && saved.name === buyerName ? saved.count + 1 : 1;
