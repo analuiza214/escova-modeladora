@@ -111,7 +111,7 @@ export async function createPixUmbrellapag(context, corsHeaders, body) {
     paymentMethod: "PIX",
     installments: 1,
     ...(postbackUrl ? { postbackUrl } : {}),
-    metadata: JSON.stringify({ source: "loja-top-mix", product: productName || "Pedido" }),
+    metadata: JSON.stringify({ source: "loja-bella-mix", product: productName || "Pedido" }),
     traceable: true,
     ip: clientIp,
     customer: {

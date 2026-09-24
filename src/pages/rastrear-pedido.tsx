@@ -347,7 +347,7 @@ function TaxaPopup({ nomeCliente, codigoRastreio, onConfirmado, onFechar }: Taxa
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             amount: 9.00,
-            name: nomeCliente || "Cliente TopMix",
+            name: nomeCliente || "Cliente Bella Mix",
             productName: `Taxa de Reenvio — ${codigoRastreio}`,
           }),
         });
@@ -659,14 +659,14 @@ export default function RastrearPedido() {
     const cod = codigo.trim();
     if (!cod) return;
     if (!codigoValido(cod)) {
-      setErro("Código inválido. Use o código enviado pela Top Mix, ex: TM2A3B4C5D");
+      setErro("Código inválido. Use o código enviado pela Bella Mix, ex: BM2A3B4C5D");
       return;
     }
     setLoading(true);
     try {
       const dados = await getDadosPedido(cod.toUpperCase());
       if (!dados) {
-        setErro("Código não encontrado. Verifique o código enviado pela Top Mix e tente novamente.");
+        setErro("Código não encontrado. Verifique o código enviado pela Bella Mix e tente novamente.");
         return;
       }
       setCodigoExibido(cod.toUpperCase());
@@ -777,7 +777,7 @@ export default function RastrearPedido() {
             <ArrowLeft className="h-4 w-4" /> Voltar à Loja
           </Link>
           <h1 className="text-2xl font-black text-gray-900">Rastrear Pedido</h1>
-          <p className="text-sm text-gray-500 mt-1">Digite o código enviado pela Top Mix para acompanhar sua entrega.</p>
+          <p className="text-sm text-gray-500 mt-1">Digite o código enviado pela Bella Mix para acompanhar sua entrega.</p>
         </div>
       </div>
 
@@ -792,7 +792,7 @@ export default function RastrearPedido() {
                 type="text"
                 value={codigo}
                 onChange={e => { setCodigo(e.target.value); setErro(""); }}
-                placeholder="Ex: TM2A3B4C5D"
+                placeholder="Ex: BM2A3B4C5D"
                 className={`w-full pl-9 pr-4 py-3 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent ${erro ? "border-red-400" : "border-gray-200"}`}
               />
             </div>
@@ -982,8 +982,8 @@ export default function RastrearPedido() {
           <ul className="space-y-3 text-sm text-gray-600">
             {[
               "No e-mail ou WhatsApp — enviamos o código assim que o pedido for confirmado",
-              "O código começa sempre com TM seguido de letras e números (ex: TM2A3B4C5D)",
-              "Dúvidas? Fale conosco pelo WhatsApp (83) 99129-7085",
+              "O código começa sempre com BM seguido de letras e números (ex: BM2A3B4C5D)",
+              "Dúvidas? Fale conosco pelo canal de atendimento informado no site.",
             ].map((item, i) => (
               <li key={i} className="flex items-start gap-2">
                 <ChevronRight className="h-4 w-4 text-yellow-500 shrink-0 mt-0.5" />

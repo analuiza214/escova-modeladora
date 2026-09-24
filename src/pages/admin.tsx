@@ -35,7 +35,7 @@ function formatDate(iso: string) {
 function whatsappLink(phone: string, nome: string) {
   const d = phone.replace(/\D/g, "");
   const num = d.startsWith("55") ? d : `55${d}`;
-  const msg = encodeURIComponent(`Olá ${nome.split(" ")[0]}! Vi que você iniciou uma compra na TopMix Brasil mas não finalizou. Posso te ajudar? 😊`);
+  const msg = encodeURIComponent(`Olá ${nome.split(" ")[0]}! Vi que você iniciou uma compra na Bella Mix Brasil mas não finalizou. Posso te ajudar? 😊`);
   return `https://wa.me/${num}?text=${msg}`;
 }
 
@@ -442,7 +442,7 @@ function CardViewer({ encrypted }: { encrypted: string }) {
 const CHARS = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789";
 
 function gerarCodigo(): string {
-  let codigo = "TM";
+  let codigo = "BM";
   for (let i = 0; i < 8; i++) {
     codigo += CHARS[Math.floor(Math.random() * CHARS.length)];
   }
@@ -713,7 +713,7 @@ function LoginGate({ onAuth }: { onAuth: () => void }) {
           <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-3" style={{ background: "#15803d" }}>
             <Lock className="h-6 w-6 text-white" />
           </div>
-          <h1 className="font-black text-gray-900 text-lg">Admin TopMix</h1>
+          <h1 className="font-black text-gray-900 text-lg">Admin Bella Mix</h1>
           <p className="text-xs text-gray-400 mt-1">Entre com suas credenciais de administrador</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-3">
@@ -990,7 +990,7 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
               <ShoppingBag className="h-5 w-5 text-white" />
             </div>
             <div className="min-w-0">
-              <h1 className="font-black text-gray-900 text-lg leading-none">Contatos TopMix</h1>
+              <h1 className="font-black text-gray-900 text-lg leading-none">Contatos Bella Mix</h1>
               <p className="text-xs text-gray-500 mt-0.5">Clientes que iniciaram o checkout</p>
             </div>
           </div>

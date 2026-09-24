@@ -6,20 +6,12 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { getImagePath } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/lib/supabase";
 import { encryptData } from "@/lib/encrypt";
 import { pushEcommerceEvent, getTrackingParams, getGaClientId } from "@/lib/tracking";
 import {
   Loader2, QrCode, CreditCard, ShieldCheck, Lock,
   ChevronDown, ChevronUp, Truck, Check, AlertCircle,
 } from "lucide-react";
-
-const RASTREIO_CHARS = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789";
-function gerarCodigoRastreio(): string {
-  let cod = "TM";
-  for (let i = 0; i < 8; i++) cod += RASTREIO_CHARS[Math.floor(Math.random() * RASTREIO_CHARS.length)];
-  return cod;
-}
 
 function formatPhone(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 11);
@@ -310,6 +302,7 @@ export default function Checkout() {
       },
       amount: Number(finalAmount.toFixed(2)),
       productName: items.map(i => i.name).join(", "),
+      items: items.map(i => ({ id: i.id, quantity: i.quantity })),
     };
 
     let orderId = "";
@@ -435,6 +428,7 @@ export default function Checkout() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...checkoutData,
+            orderId,
             amount: cardTotal,
             card: {
               number: cardDigits,
@@ -472,93 +466,6 @@ export default function Checkout() {
           amount: cardTotal,
           productName: items.map(i => i.name).join(", "),
         }));
-
-        // Atualiza o lead antes de navegar. Assim, se o cliente migrar para
-        // PIX logo após a recusa, esta gravação não chega atrasada e não
-        // sobrescreve o status pix_gerado.
-        {
-          const statusLead = data.status === "approved" ? "pago"
-            : data.status === "pending" ? "cartao_processando"
-            : "cartao_recusado";
-          const { error: leadUpdateError } = await supabase
-            .from("leads")
-            .update({
-              ...(data.transactionId ? { transaction_id: data.transactionId } : {}),
-              status: statusLead,
-              purchase_sent: data.status === "approved",
-              ...(data.status !== "approved" && data.status !== "pending"
-                ? { card_erro: (data.error || "Recusado pelo emissor").slice(0, 500) }
-                : {}),
-            })
-            .eq("id", orderId);
-          if (leadUpdateError) console.error("Erro ao salvar transaction_id cartão:", leadUpdateError);
-        }
-
-        // Gera e envia código de rastreio automaticamente se aprovado
-        if (data.status === "approved") {
-          const codigoRastreio = gerarCodigoRastreio();
-          supabase
-            .from("leads")
-            .update({ codigo_rastreio: codigoRastreio, updated_at: new Date().toISOString() })
-            .eq("id", orderId)
-            .then(() => {});
-          // Registra na rastreio_origem para a página de rastreio funcionar
-          supabase.from("rastreio_origem").upsert(
-            { codigo: codigoRastreio, origem_at: new Date().toISOString(), nome_cliente: buyer.nome || null },
-            { onConflict: "codigo", ignoreDuplicates: true }
-          ).then(() => {});
-          // Envia email com o código
-          fetch("/api/send-tracking-email", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              emailCliente: buyer.email,
-              nomeCliente: buyer.nome,
-              codigoRastreio,
-            }),
-          }).catch(() => {});
-        }
-
-        // Dispara eventos de compra se aprovado
-        if (data.status === "approved") {
-          fetch("/api/fb-purchase", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              user_data: {
-                em: [buyer.email],
-                ph: [buyer.telefone.replace(/\D/g, "")],
-                fn: [buyer.nome.split(" ")[0]],
-                ln: [buyer.nome.split(" ").slice(1).join(" ") || ""],
-              },
-              custom_data: {
-                value: cardTotal,
-                currency: "BRL",
-                content_name: items.map(i => i.name).join(", "),
-                num_items: items.reduce((s, i) => s + i.quantity, 0),
-              },
-              event_id: `card_${data.transactionId || Date.now()}`,
-            }),
-          }).catch(() => {});
-
-          fetch("/api/utmify-order", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              orderId: data.transactionId || `TM${Date.now().toString(36).toUpperCase().slice(-8).replace(/O/g, "P").replace(/0/g, "9")}`,
-              status: "paid",
-              paymentMethod: "credit_card",
-              customerName: buyer.nome,
-              customerEmail: buyer.email,
-              customerPhone: buyer.telefone.replace(/\D/g, ""),
-              customerDocument: card.cpf.replace(/\D/g, "") || null,
-              productName: items.map(i => i.name).join(", "),
-              valueInCents: Math.round(cardTotal * 100),
-              tracking: effectiveTracking,
-              createdAt: new Date().toISOString(),
-            }),
-          }).catch(() => {});
-        }
 
         setProcessing(false);
         if (data.status === "approved") {

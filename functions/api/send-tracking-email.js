@@ -33,6 +33,10 @@ export async function onRequest(context) {
   }
 
   const primeiroNome = nomeCliente ? nomeCliente.split(" ")[0] : "cliente";
+  const siteUrl = String(env.SITE_URL || "").trim().replace(/\/+$/, "");
+  if (!siteUrl) {
+    return new Response(JSON.stringify({ error: "SITE_URL nao configurado" }), { status: 500, headers: corsHeaders });
+  }
 
   const html = `
 <!DOCTYPE html>
@@ -40,7 +44,7 @@ export async function onRequest(context) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Código de Rastreio — TopMix Brasil</title>
+  <title>Código de Rastreio — Bella Mix Brasil</title>
 </head>
 <body style="margin:0;padding:0;background:#f4f4f5;font-family:'Helvetica Neue',Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:32px 16px;">
@@ -49,7 +53,7 @@ export async function onRequest(context) {
         <table width="100%" style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
           <tr>
             <td style="background:#15803d;padding:28px 32px;text-align:center;">
-              <p style="margin:0;font-size:22px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">📦 TopMix Brasil</p>
+              <p style="margin:0;font-size:22px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">📦 Bella Mix Brasil</p>
               <p style="margin:6px 0 0;font-size:13px;color:#bbf7d0;">Seu pedido está a caminho!</p>
             </td>
           </tr>
@@ -65,21 +69,21 @@ export async function onRequest(context) {
                 <p style="margin:0;font-size:28px;font-weight:900;color:#15803d;letter-spacing:4px;font-family:monospace;">${codigoRastreio}</p>
               </div>
               <div style="text-align:center;margin:0 0 24px;">
-                <a href="https://toop-mix-oficial.shop/rastrear-pedido"
+                <a href="${siteUrl}/rastrear-pedido"
                    style="display:inline-block;background:#15803d;color:#ffffff;text-decoration:none;font-weight:700;font-size:14px;padding:14px 32px;border-radius:10px;">
                   Rastrear meu pedido →
                 </a>
               </div>
               <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center;line-height:1.6;">
                 Dúvidas? Entre em contato conosco pelo WhatsApp.<br/>
-                Obrigado por comprar na <strong>TopMix Brasil</strong>! 🌟
+                Obrigado por comprar na <strong>Bella Mix Brasil</strong>! 🌟
               </p>
             </td>
           </tr>
           <tr>
             <td style="background:#f9fafb;padding:16px 32px;text-align:center;border-top:1px solid #f0f0f0;">
               <p style="margin:0;font-size:11px;color:#d1d5db;">
-                © ${new Date().getFullYear()} TopMix Brasil · Este email foi enviado automaticamente.
+                © ${new Date().getFullYear()} Bella Mix Brasil · Este email foi enviado automaticamente.
               </p>
             </td>
           </tr>
@@ -100,7 +104,7 @@ export async function onRequest(context) {
       body: JSON.stringify({
         from: RESEND_FROM_EMAIL,
         to: [emailCliente],
-        subject: `📦 Seu código de rastreio TopMix${numeroPedido ? ` — Pedido #${numeroPedido}` : ""}`,
+        subject: `📦 Seu código de rastreio Bella Mix${numeroPedido ? ` — Pedido #${numeroPedido}` : ""}`,
         html,
       }),
     });

@@ -1,4 +1,5 @@
 import { sendUtmifyOrder } from "./utmify.js";
+import { sendFacebookPurchase } from "./facebook.js";
 
 function config(env) {
   const url = String(env.SUPABASE_URL || env.VITE_SUPABASE_URL || "").trim().replace(/\/+$/, "");
@@ -22,7 +23,7 @@ async function supabaseRequest(env, path, options = {}) {
   return response;
 }
 
-const TRACKING_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "gclid", "fbclid", "ttclid"];
+const TRACKING_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "src", "sck", "gclid", "fbclid", "ttclid", "fbc", "fbp"];
 
 function trackingValues(tracking) {
   const source = tracking && typeof tracking === "object" ? tracking : {};
@@ -119,6 +120,16 @@ export async function updateLeadById(env, leadId, changes) {
   return Array.isArray(rows) && rows.length > 0;
 }
 
+export async function getLeadById(env, leadId) {
+  if (!leadId) return null;
+  const response = await supabaseRequest(
+    env,
+    `leads?id=eq.${encodeURIComponent(leadId)}&select=id,valor,produtos,metodo_pagamento,status&limit=1`,
+  );
+  const rows = await response.json();
+  return Array.isArray(rows) && rows[0] ? rows[0] : null;
+}
+
 export async function savePixLead(env, body, result, gateway) {
   if (!body.orderId) throw new Error("Pedido interno não informado.");
   const saved = await updateLeadById(env, body.orderId, {
@@ -155,7 +166,7 @@ function trackingCode() {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   const bytes = new Uint8Array(8);
   crypto.getRandomValues(bytes);
-  return `TM${Array.from(bytes, (byte) => alphabet[byte % alphabet.length]).join("")}`;
+  return `BM${Array.from(bytes, (byte) => alphabet[byte % alphabet.length]).join("")}`;
 }
 
 async function registerTrackingOrigin(env, code, name) {
@@ -166,7 +177,7 @@ async function registerTrackingOrigin(env, code, name) {
   });
 }
 
-async function sendPaidAttribution(env, transactionId, paidAt) {
+async function sendPaidAttribution(env, transactionId, paidAt, paymentMethod = "pix") {
   const response = await supabaseRequest(
     env,
     `leads?transaction_id=eq.${encodeURIComponent(transactionId)}&purchase_sent=eq.false&select=id,transaction_id,nome,email,telefone,cpf,produtos,valor,tracking,created_at`,
@@ -180,10 +191,10 @@ async function sendPaidAttribution(env, transactionId, paidAt) {
   if (!Array.isArray(rows) || rows.length === 0) return { alreadySent: true };
   const lead = rows[0];
   try {
-    await sendUtmifyOrder(env, {
+    const orderPayload = {
       orderId: lead.transaction_id || lead.id,
       status: "paid",
-      paymentMethod: "pix",
+      paymentMethod,
       customerName: lead.nome,
       customerEmail: lead.email,
       customerPhone: String(lead.telefone || "").replace(/\D/g, ""),
@@ -193,7 +204,28 @@ async function sendPaidAttribution(env, transactionId, paidAt) {
       tracking: lead.tracking,
       createdAt: lead.created_at,
       paidAt,
-    });
+    };
+    const names = String(lead.nome || "").trim().split(/\s+/);
+    await Promise.all([
+      sendUtmifyOrder(env, orderPayload),
+      sendFacebookPurchase(env, {
+        event_id: `${lead.transaction_id || lead.id}_purchase`,
+        user_data: {
+          em: [lead.email],
+          ph: [String(lead.telefone || "").replace(/\D/g, "")],
+          fn: [names[0] || ""],
+          ln: [names.slice(1).join(" ")],
+          fbc: lead.tracking?.fbc || undefined,
+          fbp: lead.tracking?.fbp || undefined,
+        },
+        custom_data: {
+          value: Number(lead.valor || 0),
+          currency: "BRL",
+          content_name: lead.produtos,
+          content_type: "product",
+        },
+      }),
+    ]);
     return { sent: true };
   } catch (error) {
     await supabaseRequest(env, `leads?id=eq.${encodeURIComponent(lead.id)}`, {
@@ -206,7 +238,7 @@ async function sendPaidAttribution(env, transactionId, paidAt) {
   }
 }
 
-export async function fulfillPaidPixLead(env, transactionId, paidAt) {
+export async function fulfillPaidLead(env, transactionId, paidAt, paymentMethod = "pix") {
   const code = trackingCode();
   const response = await supabaseRequest(
     env,
@@ -244,6 +276,10 @@ export async function fulfillPaidPixLead(env, transactionId, paidAt) {
       email = { sent: false, retryRequired: true };
     }
   }
-  const attribution = await sendPaidAttribution(env, transactionId, paidAt || new Date().toISOString());
+  const attribution = await sendPaidAttribution(env, transactionId, paidAt || new Date().toISOString(), paymentMethod);
   return { paid: true, email, attribution };
+}
+
+export async function fulfillPaidPixLead(env, transactionId, paidAt) {
+  return fulfillPaidLead(env, transactionId, paidAt, "pix");
 }

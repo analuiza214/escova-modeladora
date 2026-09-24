@@ -1,8 +1,8 @@
 function trackingParams(tracking) {
   const source = tracking && typeof tracking === "object" ? tracking : {};
   return {
-    src: null,
-    sck: null,
+    src: source.src || null,
+    sck: source.sck || null,
     utm_source: source.utm_source || null,
     utm_campaign: source.utm_campaign || null,
     utm_medium: source.utm_medium || null,
@@ -19,7 +19,7 @@ export async function sendUtmifyOrder(env, order) {
   const now = new Date().toISOString();
   const valueInCents = Math.max(0, Math.round(Number(order.valueInCents || 0)));
   const payload = {
-    orderId: String(order.orderId || `topmix_${Date.now()}`),
+    orderId: String(order.orderId || `bellamix_${Date.now()}`),
     platform: "other",
     paymentMethod: order.paymentMethod || "pix",
     status,
@@ -28,15 +28,15 @@ export async function sendUtmifyOrder(env, order) {
     refundedAt: null,
     customer: {
       name: order.customerName || "Cliente",
-      email: order.customerEmail || "sem-email@topmix.com.br",
+      email: order.customerEmail || "sem-email@bellamixbrasil.com.br",
       phone: order.customerPhone || null,
       document: order.customerDocument || null,
       country: "BR",
     },
     products: [{
-      id: "topmix_figurinhas",
+      id: "bellamix_escovas",
       name: order.productName || "Kit Escova Secadora",
-      planId: "topmix_figurinhas",
+      planId: "bellamix_escovas",
       planName: order.productName || "Kit Escova Secadora",
       quantity: 1,
       priceInCents: valueInCents,

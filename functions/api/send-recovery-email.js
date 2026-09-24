@@ -159,7 +159,10 @@ export async function onRequest(context) {
     ? `R$ ${(Number(valor) / 100).toFixed(2).replace(".", ",")}`
     : null;
   const ctaLabel = "✅ Garantir meu kit agora →";
-  const url = storeUrl || env.SITE_URL || "https://toop-mix-oficial.shop/";
+  const url = storeUrl || env.SITE_URL;
+  if (!url) {
+    return new Response(JSON.stringify({ error: "SITE_URL nao configurado" }), { status: 500, headers: corsHeaders });
+  }
 
   let corpoHtml;
   let assunto;
@@ -205,7 +208,7 @@ export async function onRequest(context) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TopMix Brasil</title>
+  <title>Bella Mix Brasil</title>
 </head>
 <body style="margin:0;padding:0;background:#f4f4f5;font-family:'Helvetica Neue',Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:32px 16px;">
@@ -213,7 +216,7 @@ export async function onRequest(context) {
       <table width="100%" style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
         <tr>
           <td style="background:#dc2626;padding:28px 32px;text-align:center;">
-            <p style="margin:0;font-size:22px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">✨ TopMix Brasil</p>
+            <p style="margin:0;font-size:22px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">✨ Bella Mix Brasil</p>
             <p style="margin:6px 0 0;font-size:14px;color:#fecaca;font-weight:700;">${headerSubtitle}</p>
           </td>
         </tr>
@@ -227,7 +230,7 @@ export async function onRequest(context) {
           <td style="background:#f9fafb;padding:16px 32px;text-align:center;border-top:1px solid #f0f0f0;">
             <p style="margin:0 0 4px;font-size:12px;color:#9ca3af;">Dúvidas? Chame no WhatsApp. Somos sempre rápidos! 😊</p>
             <p style="margin:0;font-size:11px;color:#d1d5db;">
-              © ${new Date().getFullYear()} TopMix Brasil · Você recebeu este email pois iniciou um pedido em nossa loja.
+              © ${new Date().getFullYear()} Bella Mix Brasil · Você recebeu este email pois iniciou um pedido em nossa loja.
             </p>
           </td>
         </tr>

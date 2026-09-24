@@ -14,26 +14,53 @@ export function saveTrackingParams(): void {
     "utm_campaign",
     "utm_content",
     "utm_term",
+    "src",
+    "sck",
     "gclid",
     "fbclid",
     "ttclid",
   ];
+  const now = Date.now();
   keys.forEach((key) => {
     const value = params.get(key);
-    if (value) localStorage.setItem(key, value);
+    if (value) {
+      localStorage.setItem(key, value);
+      localStorage.setItem(`${key}_saved_at`, String(now));
+    }
   });
 }
 
 export function getTrackingParams(): Record<string, string | null> {
+  const maxAge = 30 * 24 * 60 * 60 * 1000;
+  const read = (key: string): string | null => {
+    const value = localStorage.getItem(key);
+    if (!value) return null;
+    const savedAt = Number(localStorage.getItem(`${key}_saved_at`) || 0);
+    if (savedAt && Date.now() - savedAt > maxAge) {
+      localStorage.removeItem(key);
+      localStorage.removeItem(`${key}_saved_at`);
+      return null;
+    }
+    return value;
+  };
+  const cookie = (name: string) => document.cookie
+    .split("; ")
+    .find((part) => part.startsWith(`${name}=`))
+    ?.slice(name.length + 1) || null;
+  const fbclid = read("fbclid");
   return {
-    utm_source: localStorage.getItem("utm_source"),
-    utm_medium: localStorage.getItem("utm_medium"),
-    utm_campaign: localStorage.getItem("utm_campaign"),
-    utm_content: localStorage.getItem("utm_content"),
-    utm_term: localStorage.getItem("utm_term"),
-    gclid: localStorage.getItem("gclid"),
-    fbclid: localStorage.getItem("fbclid"),
-    ttclid: localStorage.getItem("ttclid"),
+    utm_source: read("utm_source"),
+    utm_medium: read("utm_medium"),
+    utm_campaign: read("utm_campaign"),
+    utm_content: read("utm_content"),
+    utm_term: read("utm_term"),
+    src: read("src"),
+    sck: read("sck"),
+    gclid: read("gclid"),
+    fbclid,
+    ttclid: read("ttclid"),
+    fbp: cookie("_fbp"),
+    fbc: cookie("_fbc") || (fbclid ? `fb.1.${Date.now()}.${fbclid}` : null),
   };
 }
 

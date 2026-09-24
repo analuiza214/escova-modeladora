@@ -370,7 +370,7 @@ export default function Success() {
         currency: "BRL",
         value: cardAmount,
         payment_type: "credit_card",
-        items: [{ item_id: "topmix_order", item_name: cardProduct, price: cardAmount, quantity: 1 }],
+        items: [{ item_id: "bellamix_order", item_name: cardProduct, price: cardAmount, quantity: 1 }],
       }, { event_id: `card_${cardTxId || Date.now()}_purchase` });
     }
 
@@ -516,7 +516,7 @@ export default function Success() {
       payment_type: "pix",
       items: [
         {
-          item_id: "topmix_order",
+          item_id: "bellamix_order",
           item_name: orderProductName,
           price: orderAmount,
           quantity: 1,

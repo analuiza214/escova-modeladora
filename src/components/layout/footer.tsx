@@ -87,7 +87,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-4 pt-6 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-600 text-center">
           <div className="space-y-0.5">
-            <div>© 2026 TopMix Brasil. Todos os direitos reservados.</div>
+            <div>© 2026 Bella Mix Brasil. Todos os direitos reservados.</div>
             <div className="text-gray-700">CNPJ: 08.815.098/0001-47</div>
           </div>
           <div className="flex items-center gap-3 text-gray-700">

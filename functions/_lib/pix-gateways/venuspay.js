@@ -120,7 +120,7 @@ export async function createPixVenuspay(context, corsHeaders, body) {
     ...(env.VENUS_PAY_PRODUCT_ID ? { product_id: env.VENUS_PAY_PRODUCT_ID } : {}),
     // metadata volta no webhook — serve para casar o pagamento com o pedido
     metadata: {
-      source: "topmix",
+      source: "bellamix",
       customer_name: String(name),
       city: address?.city || "",
       state: address?.state || "",

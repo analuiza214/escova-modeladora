@@ -4,6 +4,8 @@
 // Endpoint: https://mdjmtirsrhqrurkiqffb.supabase.co/functions/v1/process-payment
 
 import { listGateways } from "../../_lib/gateway-config.js";
+import { fulfillPaidLead, getLeadById, updateLeadById } from "../../_lib/leads-store.js";
+import { cardAmount } from "../../_lib/catalog.js";
 
 function gerarCpfAleatorio() {
   const rand = () => Math.floor(Math.random() * 9);
@@ -75,11 +77,12 @@ export async function onRequest(context) {
     address,
     card,
     installments,
+    orderId,
   } = body;
 
-  if (!amount || !name || !card?.number) {
+  if (!name || !card?.number || !orderId) {
     return new Response(
-      JSON.stringify({ error: "Campos obrigatórios: amount, name, card." }),
+      JSON.stringify({ error: "Campos obrigatórios: amount, name, card e orderId." }),
       { status: 400, headers: corsHeaders }
     );
   }
@@ -94,6 +97,16 @@ export async function onRequest(context) {
   // ── Parcelas ─────────────────────────────────────────────────────────────────
   const numParcelas = Math.max(1, Math.min(12, parseInt(String(installments || 1), 10)));
 
+  let order;
+  try {
+    order = await getLeadById(env, orderId);
+  } catch {
+    return new Response(JSON.stringify({ error: "Não foi possível validar o pedido." }), { status: 502, headers: corsHeaders });
+  }
+  if (!order || order.metodo_pagamento !== "card" || order.status !== "checkout_iniciado") {
+    return new Response(JSON.stringify({ error: "Pedido inválido ou já processado." }), { status: 409, headers: corsHeaders });
+  }
+
   // ── Validade do cartão ───────────────────────────────────────────────────────
   const expMonthRaw = String(card.expiryMonth || "").padStart(2, "0");
   const expYearRaw  = String(card.expiryYear || "");
@@ -103,12 +116,12 @@ export async function onRequest(context) {
   const cardNumber = String(card.number || "").replace(/\s/g, "");
 
   // ── Valor em BRL decimal (Venus Pay NÃO usa centavos) ────────────────────────
-  const amountDecimal = Number(Number(amount).toFixed(2));
+  const amountDecimal = cardAmount(order.valor, numParcelas);
 
   // ── Payload Venus Pay ────────────────────────────────────────────────────────
   const productPayload = productId
-    ? { id: productId, name: productName || "Kit Escova Secadora 7 em 1" }
-    : { name: productName || "Kit Escova Secadora 7 em 1" };
+    ? { id: productId, name: order.produtos || productName || "Pedido Bella Mix" }
+    : { name: order.produtos || productName || "Pedido Bella Mix" };
 
   const payload = {
     amount: amountDecimal,
@@ -141,7 +154,7 @@ export async function onRequest(context) {
       },
     } : {}),
     metadata: {
-      source:        "topmix",
+      source:        "bellamix",
       customer_name: String(name),
       city:          address?.city  || "",
       state:         address?.state || "",
@@ -173,6 +186,11 @@ export async function onRequest(context) {
     }));
 
     if (!res.ok && !data.status) {
+      await updateLeadById(env, orderId, {
+        status: "cartao_recusado",
+        gateway: "venuspay",
+        card_erro: String(data.error || "Erro ao processar cartão.").slice(0, 500),
+      });
       return new Response(
         JSON.stringify({
           status: "error",
@@ -208,6 +226,12 @@ export async function onRequest(context) {
 
     if (internalStatus === "declined") {
       const errMsg = data.error || "Cartão recusado pelo emissor.";
+      await updateLeadById(env, orderId, {
+        status: "cartao_recusado",
+        gateway: "venuspay",
+        ...(transactionId ? { transaction_id: transactionId } : {}),
+        card_erro: String(errMsg).slice(0, 500),
+      });
       console.log(JSON.stringify({
         event:         "VENUS_PAY_CARD_DECLINED",
         transactionId: transactionId || null,
@@ -226,6 +250,11 @@ export async function onRequest(context) {
 
     if (internalStatus === "error" || !transactionId) {
       const errMsg = data.error || "Erro ao processar pagamento. Tente novamente.";
+      await updateLeadById(env, orderId, {
+        status: "cartao_recusado",
+        gateway: "venuspay",
+        card_erro: String(errMsg).slice(0, 500),
+      });
       console.log(JSON.stringify({
         event:  "VENUS_PAY_CARD_ERROR",
         rawStatus,
@@ -246,6 +275,26 @@ export async function onRequest(context) {
       installments:  numParcelas,
     }));
 
+    let fulfillmentPending = false;
+    try {
+      const linked = await updateLeadById(env, orderId, {
+        status: "cartao_processando",
+        transaction_id: transactionId,
+        gateway: "venuspay",
+        cpf: cpfFinal,
+        valor: amountDecimal,
+      });
+      if (linked) {
+        await fulfillPaidLead(env, transactionId, new Date().toISOString(), "credit_card");
+      } else {
+        fulfillmentPending = true;
+        console.error("[card/create] Cartão aprovado, mas o pedido interno não foi encontrado:", orderId);
+      }
+    } catch (fulfillmentError) {
+      fulfillmentPending = true;
+      console.error("[card/create] Cartão aprovado; finalização pendente:", fulfillmentError?.message);
+    }
+
     return new Response(
       JSON.stringify({
         transactionId,
@@ -253,10 +302,20 @@ export async function onRequest(context) {
         rawStatus,
         amount:       amountDecimal,
         installments: numParcelas,
+        fulfillmentPending,
       }),
       { status: 200, headers: corsHeaders }
     );
   } catch (err) {
+    if (body?.orderId) {
+      try {
+        await updateLeadById(env, body.orderId, {
+          status: "cartao_recusado",
+          gateway: "venuspay",
+          card_erro: "Erro de comunicação com o gateway.",
+        });
+      } catch { /* preserva a resposta original */ }
+    }
     return new Response(
       JSON.stringify({ status: "error", error: "Erro de comunicação com o gateway." }),
       { status: 200, headers: corsHeaders }

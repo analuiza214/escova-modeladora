@@ -13,7 +13,7 @@ import { createPixIronpay } from "../../_lib/pix-gateways/ironpay.js";
 import { createPixMasterfy } from "../../_lib/pix-gateways/masterfy.js";
 import { createPixUmbrellapag } from "../../_lib/pix-gateways/umbrellapag.js";
 import { createPixVenuspay } from "../../_lib/pix-gateways/venuspay.js";
-import { savePixLead } from "../../_lib/leads-store.js";
+import { getLeadById, savePixLead } from "../../_lib/leads-store.js";
 import { sendUtmifyOrder } from "../../_lib/utmify.js";
 
 const corsHeaders = {
@@ -83,6 +83,21 @@ export async function onRequest(context) {
     return new Response(JSON.stringify({ error: "JSON invalido." }), { status: 400, headers: corsHeaders });
   }
 
+  let order;
+  try {
+    order = await getLeadById(env, body.orderId);
+  } catch {
+    return new Response(JSON.stringify({ error: "Não foi possível validar o pedido." }), { status: 502, headers: corsHeaders });
+  }
+  if (!order || order.metodo_pagamento !== "pix" || order.status !== "checkout_iniciado") {
+    return new Response(JSON.stringify({ error: "Pedido PIX inválido ou já processado." }), { status: 409, headers: corsHeaders });
+  }
+  const safeBody = {
+    ...body,
+    amount: Number(order.valor),
+    productName: order.produtos,
+  };
+
   // ── Roteamento de gateway PIX (configurado no painel /admin) ──
   const activeGateway = await getActivePixGateway(env);
 
@@ -94,27 +109,27 @@ export async function onRequest(context) {
   }
 
   let response;
-  if (activeGateway === "masterfy") response = await createPixMasterfy(context, corsHeaders, body);
-  else if (activeGateway === "umbrellapag") response = await createPixUmbrellapag(context, corsHeaders, body);
-  else if (activeGateway === "venuspay_pix") response = await createPixVenuspay(context, corsHeaders, body);
-  else response = await createPixIronpay(context, corsHeaders, body);
+  if (activeGateway === "masterfy") response = await createPixMasterfy(context, corsHeaders, safeBody);
+  else if (activeGateway === "umbrellapag") response = await createPixUmbrellapag(context, corsHeaders, safeBody);
+  else if (activeGateway === "venuspay_pix") response = await createPixVenuspay(context, corsHeaders, safeBody);
+  else response = await createPixIronpay(context, corsHeaders, safeBody);
 
   if (!response.ok) return response;
   try {
     const result = await response.clone().json();
-    await savePixLead(env, body, result, activeGateway);
+    await savePixLead(env, safeBody, result, activeGateway);
     try {
       await sendUtmifyOrder(env, {
         orderId: result.transactionId,
         status: "waiting_payment",
         paymentMethod: "pix",
-        customerName: body.name,
-        customerEmail: body.email,
-        customerPhone: String(body.phone || "").replace(/\D/g, ""),
-        customerDocument: body.document || null,
-        productName: body.productName,
-        valueInCents: Math.round(Number(body.amount) * 100),
-        tracking: body.tracking,
+        customerName: safeBody.name,
+        customerEmail: safeBody.email,
+        customerPhone: String(safeBody.phone || "").replace(/\D/g, ""),
+        customerDocument: safeBody.document || null,
+        productName: safeBody.productName,
+        valueInCents: Math.round(Number(safeBody.amount) * 100),
+        tracking: safeBody.tracking,
       });
     } catch (trackingError) {
       console.error("[pix/create] Falha ao registrar PIX na UTMify:", trackingError?.message);
