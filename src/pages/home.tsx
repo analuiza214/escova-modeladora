@@ -279,7 +279,7 @@ export default function Home() {
             onClick={() => document.getElementById("kits")?.scrollIntoView({ behavior: "smooth" })}
           >
             <img
-              src={getImagePath("/images/Banner-Escova-Modeladora-3-em-1.png")}
+              src={getImagePath("/images/Banner-Escova-Modeladora-3-em-1-Qualidade-Maxima-2X.png")}
               alt="Kit 7 em 1 Escova Secadora com maleta por R$ 129,90"
               className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-[1.01]"
               fetchPriority="high"
@@ -430,11 +430,21 @@ export default function Home() {
             {[
               { mediaId: "43o1wjrs8m", name: "Vanessa Santos", city: "São Paulo, SP", stars: 5 },
               { mediaId: "wkqskzw8nf", name: "Roberta Soares", city: "Rio de Janeiro, RJ", stars: 5 },
-              { mediaId: "9r9frm3do1", name: "Ana Lima", city: "Belo Horizonte, MG", stars: 5 },
+              { videoSrc: "/videos/depoimento-3.mp4", name: "Ana Lima", city: "Belo Horizonte, MG", stars: 5 },
               { mediaId: "lvctikn03c", name: "Karol Silva", city: "Recife, PE", stars: 5 },
             ].map((dep) => (
-              <div key={dep.mediaId} className="flex flex-col rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50">
-                <WistiaPlayer mediaId={dep.mediaId} aspect={0.5625} />
+              <div key={dep.mediaId || dep.videoSrc} className="flex flex-col rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50">
+                {dep.videoSrc ? (
+                  <video
+                    src={getImagePath(dep.videoSrc)}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="w-full aspect-[9/16] object-cover bg-black"
+                  />
+                ) : (
+                  <WistiaPlayer mediaId={dep.mediaId!} aspect={0.5625} />
+                )}
                 <div className="px-3 py-2.5">
                   <div className="flex gap-0.5 mb-1">
                     {Array.from({ length: dep.stars }).map((_, i) => (
