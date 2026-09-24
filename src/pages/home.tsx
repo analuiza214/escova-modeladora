@@ -1,14 +1,55 @@
 import { productFaqs } from "@/lib/product-faqs";
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { Link } from "wouter";
 import { products, reviews } from "@/lib/data";
 import { getImagePath } from "@/lib/utils";
-import { ShieldCheck, Truck, Star, BadgeCheck, ChevronLeft, ChevronRight } from "lucide-react";
+import { ShieldCheck, Truck, Star, BadgeCheck, ChevronLeft, ChevronRight, Play, MoreHorizontal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WistiaPlayer } from "@/components/wistia-player";
 
 // ── FAQ Section ──
 const homeFaqs = productFaqs;
+
+function LocalTestimonialPlayer({ src }: { src: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [started, setStarted] = useState(false);
+
+  const startVideo = () => {
+    setStarted(true);
+    void videoRef.current?.play();
+  };
+
+  return (
+    <div className="relative w-full aspect-[9/16] overflow-hidden bg-black">
+      <video
+        ref={videoRef}
+        src={getImagePath(src)}
+        controls={started}
+        playsInline
+        preload="auto"
+        className="h-full w-full object-cover"
+      />
+      {!started && (
+        <button
+          type="button"
+          onClick={startVideo}
+          aria-label="Reproduzir depoimento 3"
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <span className="absolute inset-x-0 bottom-0 flex h-9 items-center gap-2 bg-blue-700 px-3 text-white">
+            <Play className="h-4 w-4 fill-white" />
+            <strong className="text-xs">0:41</strong>
+            <span className="h-1 flex-1 rounded-full bg-white/70" />
+            <MoreHorizontal className="h-5 w-5" />
+          </span>
+          <span className="flex h-20 w-28 items-center justify-center bg-blue-700/90 text-white shadow-lg">
+            <Play className="h-10 w-10 fill-white" />
+          </span>
+        </button>
+      )}
+    </div>
+  );
+}
 
 function HomeFaqSection() {
   const [aberto, setAberto] = useState<number | null>(null);
@@ -435,13 +476,7 @@ export default function Home() {
             ].map((dep) => (
               <div key={dep.mediaId || dep.videoSrc} className="flex flex-col rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50">
                 {dep.videoSrc ? (
-                  <video
-                    src={getImagePath(dep.videoSrc)}
-                    controls
-                    playsInline
-                    preload="metadata"
-                    className="w-full aspect-[9/16] object-cover bg-black"
-                  />
+                  <LocalTestimonialPlayer src={dep.videoSrc} />
                 ) : (
                   <WistiaPlayer mediaId={dep.mediaId!} aspect={0.5625} />
                 )}
