@@ -82,4 +82,24 @@ export function pushEcommerceEvent(
     ...extraData,
     ecommerce: ecommerceData,
   });
+
+  const metaEventNames: Record<string, string> = {
+    view_item: "ViewContent",
+    add_to_cart: "AddToCart",
+    begin_checkout: "InitiateCheckout",
+    purchase: "Purchase",
+  };
+  const metaEventName = metaEventNames[eventName];
+  const fbq = (window as unknown as Record<string, unknown>).fbq as ((...args: unknown[]) => void) | undefined;
+  if (metaEventName && typeof fbq === "function") {
+    const items = Array.isArray(ecommerceData.items) ? ecommerceData.items as Record<string, unknown>[] : [];
+    const eventId = typeof extraData.event_id === "string" ? extraData.event_id : undefined;
+    fbq("track", metaEventName, {
+      value: ecommerceData.value,
+      currency: ecommerceData.currency || "BRL",
+      content_type: "product",
+      content_ids: items.map((item) => item.item_id).filter(Boolean),
+      contents: items.map((item) => ({ id: item.item_id, quantity: item.quantity || 1, item_price: item.price })),
+    }, eventId ? { eventID: eventId } : undefined);
+  }
 }

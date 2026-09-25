@@ -43,6 +43,8 @@ Vá em **Settings → Environment variables** e adicione as mesmas variáveis qu
 | `SUPABASE_URL` | Production |
 | `SUPABASE_SERVICE_ROLE_KEY` | Production |
 | `VITE_ENCRYPT_KEY` | Production |
+| `VITE_FB_PIXEL_ID` | Production |
+| `VITE_UTMIFY_PIXEL_ID` | Production |
 | `UTMIFY_API_TOKEN` | Production |
 | `FB_PIXEL_ID` | Production |
 | `FB_ACCESS_TOKEN` | Production |

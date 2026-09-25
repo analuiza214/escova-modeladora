@@ -40,6 +40,7 @@ id      = "44122051ba9a4c83a7d09019a3671894"
 #   VITE_GTM_ID               <- ID público do Google Tag Manager da Bella Mix
 #   VITE_GA_ID                <- ID público do Google Analytics 4 da Bella Mix
 #   VITE_UTMIFY_PIXEL_ID      <- ID público do pixel UTMify da Bella Mix
+#   VITE_FB_PIXEL_ID          <- ID público do Pixel da Meta da Bella Mix
 #   UTMIFY_API_TOKEN
 #   FB_PIXEL_ID
 #   FB_ACCESS_TOKEN

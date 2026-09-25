@@ -10,6 +10,7 @@ export function initializeMarketingScripts() {
   const gtmId = String(import.meta.env.VITE_GTM_ID || "").trim();
   const gaId = String(import.meta.env.VITE_GA_ID || "").trim();
   const utmifyPixelId = String(import.meta.env.VITE_UTMIFY_PIXEL_ID || "").trim();
+  const facebookPixelId = String(import.meta.env.VITE_FB_PIXEL_ID || "").trim();
 
   window.dataLayer = window.dataLayer || [];
 
@@ -28,5 +29,28 @@ export function initializeMarketingScripts() {
   if (utmifyPixelId) {
     (window as unknown as { pixelId: string }).pixelId = utmifyPixelId;
     appendScript("https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+  }
+
+  if (facebookPixelId) {
+    const target = window as unknown as Record<string, unknown>;
+    if (typeof target.fbq !== "function") {
+      type FbqLoader = ((...args: unknown[]) => void) & {
+        callMethod?: (...args: unknown[]) => void;
+        queue: unknown[][];
+        loaded: boolean;
+        version: string;
+      };
+      const fbq = ((...args: unknown[]) => {
+        if (typeof fbq.callMethod === "function") fbq.callMethod(...args);
+        else fbq.queue.push(args);
+      }) as FbqLoader;
+      Object.assign(fbq, { queue: [], loaded: true, version: "2.0" });
+      target.fbq = fbq;
+      target._fbq = fbq;
+      appendScript("https://connect.facebook.net/en_US/fbevents.js");
+    }
+    const fbq = target.fbq as (...args: unknown[]) => void;
+    fbq("init", facebookPixelId);
+    fbq("track", "PageView");
   }
 }

@@ -260,18 +260,6 @@ function Countdown({ seconds }: { seconds: number }) {
 
 function fireTrackingEvents(amount: number, productName: string) {
   try {
-    const fbq = (window as unknown as Record<string, unknown>).fbq as ((...a: unknown[]) => void) | undefined;
-    if (typeof fbq === "function") {
-      fbq("track", "Purchase", {
-        value: amount,
-        currency: "BRL",
-        content_name: productName,
-        content_type: "product",
-      });
-    }
-  } catch { /* silently ignore */ }
-
-  try {
     const utmify = (window as unknown as Record<string, unknown>).utmify as ((...a: unknown[]) => void) | undefined;
     if (typeof utmify === "function") {
       utmify("track", "Purchase", {
