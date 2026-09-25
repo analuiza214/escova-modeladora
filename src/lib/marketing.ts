@@ -10,7 +10,6 @@ export function initializeMarketingScripts() {
   const gtmId = String(import.meta.env.VITE_GTM_ID || "").trim();
   const gaId = String(import.meta.env.VITE_GA_ID || "").trim();
   const utmifyPixelId = String(import.meta.env.VITE_UTMIFY_PIXEL_ID || "").trim();
-  const facebookPixelId = String(import.meta.env.VITE_FB_PIXEL_ID || "").trim();
 
   window.dataLayer = window.dataLayer || [];
 
@@ -31,7 +30,7 @@ export function initializeMarketingScripts() {
     appendScript("https://cdn.utmify.com.br/scripts/pixel/pixel.js");
   }
 
-  if (facebookPixelId) {
+  {
     const target = window as unknown as Record<string, unknown>;
     if (typeof target.fbq !== "function") {
       type FbqLoader = ((...args: unknown[]) => void) & {
@@ -47,10 +46,17 @@ export function initializeMarketingScripts() {
       Object.assign(fbq, { queue: [], loaded: true, version: "2.0" });
       target.fbq = fbq;
       target._fbq = fbq;
-      appendScript("https://connect.facebook.net/en_US/fbevents.js");
+      // Preserve events emitted while the public pixel ID loads from the server.
+      void fetch("/api/marketing-config", { cache: "no-store" })
+        .then(async (response) => {
+          if (!response.ok) return;
+          const config = await response.json();
+          const pixelId = String(config.facebookPixelId || "");
+          if (!/^\d+$/.test(pixelId)) return;
+          fbq.queue.unshift(["init", pixelId], ["track", "PageView"]);
+          appendScript("https://connect.facebook.net/en_US/fbevents.js");
+        })
+        .catch(() => { /* Marketing availability must not interrupt checkout. */ });
     }
-    const fbq = target.fbq as (...args: unknown[]) => void;
-    fbq("init", facebookPixelId);
-    fbq("track", "PageView");
   }
 }
