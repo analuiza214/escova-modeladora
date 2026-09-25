@@ -14,7 +14,7 @@ export async function onRequest(context) {
   if (request.method === "OPTIONS") return new Response("", { status: 204, headers: corsHeaders });
   if (request.method !== "POST") return new Response(JSON.stringify({ error: "POST only" }), { status: 405, headers: corsHeaders });
 
-  if (!env.FB_PIXEL_ID || !env.FB_ACCESS_TOKEN) {
+  if (!env.FB_ACCESS_TOKEN) {
     return new Response(JSON.stringify({ error: "Pixel nao configurado" }), { status: 500, headers: corsHeaders });
   }
 

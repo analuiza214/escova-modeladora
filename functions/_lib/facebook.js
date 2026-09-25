@@ -1,3 +1,5 @@
+import { FACEBOOK_PIXEL_ID } from "./meta-config.js";
+
 async function hash(value) {
   if (!value) return undefined;
   const data = new TextEncoder().encode(String(value).trim().toLowerCase());
@@ -6,7 +8,7 @@ async function hash(value) {
 }
 
 export async function sendFacebookPurchase(env, payload) {
-  const pixelId = String(env.FB_PIXEL_ID || "").trim();
+  const pixelId = FACEBOOK_PIXEL_ID;
   const accessToken = String(env.FB_ACCESS_TOKEN || "").trim();
   if (!pixelId || !accessToken) throw new Error("Pixel da Meta não configurado.");
 
