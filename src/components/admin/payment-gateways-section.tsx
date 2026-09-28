@@ -156,14 +156,14 @@ export function PaymentGatewaysSection({ onClose }: { onClose?: () => void }) {
       const list = Array.isArray(data.gateways) ? data.gateways : [];
       if (list.length === 0) {
         setNeedsSql(true);
-        applyGateways(DEFAULT_GATEWAYS);
+        applyGateways([]);
         setError("Nenhum gateway encontrado. Execute supabase/payment_gateways.sql no Supabase.");
         return;
       }
 
       applyGateways(mapGatewayRows(list));
     } catch (err) {
-      applyGateways(DEFAULT_GATEWAYS);
+      applyGateways([]);
       setError(err instanceof Error ? err.message : "Erro ao carregar gateways.");
     } finally {
       setLoading(false);
@@ -326,7 +326,7 @@ export function PaymentGatewaysSection({ onClose }: { onClose?: () => void }) {
                     </div>
                     <ToggleSwitch
                       checked={gateway.enabled}
-                      disabled={isUpdating || needsSql}
+                      disabled={loading || updatingId !== null || needsSql}
                       onChange={() => toggleGateway(gateway.id, !gateway.enabled)}
                       label={`${name} ${GATEWAY_METHOD_LABELS[gateway.method]}`}
                     />

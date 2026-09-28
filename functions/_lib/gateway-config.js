@@ -1,7 +1,7 @@
 /** Configuração de gateways — Supabase (tabela payment_gateways) com fallback padrão. */
 
 const DEFAULT_GATEWAYS = [
-  { id: "ironpay", name: "IronPay", method: "pix", enabled: true },
+  { id: "ironpay", name: "IronPay", method: "pix", enabled: false },
   { id: "masterfy", name: "MasterFy", method: "pix", enabled: false },
   { id: "umbrellapag", name: "UmbrellaPag", method: "pix", enabled: false },
   { id: "venuspay", name: "Venus Pay", method: "card", enabled: true },
@@ -20,18 +20,18 @@ function supabaseHeaders(key) {
 async function supabaseFetch(env, path, options = {}) {
   const url = (env.SUPABASE_URL || "").trim().replace(/\/+$/, "");
   const key = (env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
-  if (!url || !key) return null;
+  if (!url || !key) throw new Error("Banco de gateways não configurado.");
 
   const res = await fetch(`${url}${path}`, {
     ...options,
     headers: { ...supabaseHeaders(key), ...(options.headers || {}) },
   });
 
-  if (!res.ok) return null;
+  if (!res.ok) throw new Error("Não foi possível consultar a configuração dos gateways.");
   try {
     return await res.json();
   } catch {
-    return null;
+    throw new Error("Resposta inválida ao consultar gateways.");
   }
 }
 
@@ -74,13 +74,11 @@ export async function listGateways(env) {
 
 export async function getActivePixGateway(env) {
   const gateways = await listGateways(env);
-  const activeConfigured = gateways.find((g) => g.method === "pix" && g.enabled && g.configured);
-  if (activeConfigured) return activeConfigured.id;
-
-  // Recupera automaticamente uma configuração válida quando o banco ainda
-  // aponta para um gateway antigo ou sem as credenciais necessárias.
-  const configuredFallback = gateways.find((g) => g.method === "pix" && g.configured);
-  return configuredFallback?.id ?? null;
+  const active = gateways.filter((g) => g.method === "pix" && g.enabled);
+  if (active.length > 1) throw new Error("Mais de um gateway PIX ativo. Salve novamente a escolha no painel.");
+  if (!active.length) return null;
+  if (!active[0].configured) throw new Error("O gateway PIX selecionado está sem credenciais completas.");
+  return active[0].id;
 }
 
 export async function setGatewayEnabled(env, id, enabled) {
@@ -99,18 +97,19 @@ export async function setGatewayEnabled(env, id, enabled) {
   if (enabled && target.method === "pix") {
     const otherPix = all.filter((g) => g.method === "pix" && g.id !== id && g.enabled);
     for (const g of otherPix) {
-      await fetch(`${url}/rest/v1/payment_gateways?id=eq.${encodeURIComponent(g.id)}`, {
+      const disabled = await fetch(`${url}/rest/v1/payment_gateways?id=eq.${encodeURIComponent(g.id)}`, {
         method: "PATCH",
         headers,
         body: JSON.stringify({ enabled: false, updated_at: new Date().toISOString() }),
       });
+      if (!disabled.ok) throw new Error("Não foi possível desativar o gateway anterior.");
     }
   }
 
-  const res = await fetch(`${url}/rest/v1/payment_gateways?id=eq.${encodeURIComponent(id)}`, {
-    method: "PATCH",
-    headers,
-    body: JSON.stringify({ enabled: !!enabled, updated_at: new Date().toISOString() }),
+  const res = await fetch(`${url}/rest/v1/payment_gateways?on_conflict=id`, {
+    method: "POST",
+    headers: { ...headers, Prefer: "resolution=merge-duplicates,return=representation" },
+    body: JSON.stringify({ id, name: target.name, method: target.method, enabled: !!enabled, updated_at: new Date().toISOString() }),
   });
 
   if (!res.ok) {
@@ -118,5 +117,9 @@ export async function setGatewayEnabled(env, id, enabled) {
     throw new Error(err || "Erro ao atualizar gateway.");
   }
 
+  const saved = await res.json();
+  if (!Array.isArray(saved) || !saved.some((g) => g.id === id && g.enabled === !!enabled)) {
+    throw new Error("A configuração do gateway não foi salva.");
+  }
   return listGateways(env);
 }

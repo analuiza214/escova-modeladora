@@ -60,11 +60,16 @@ export async function onRequest(context) {
   };
 
   // ── Roteamento de gateway PIX (configurado no painel /admin) ──
-  const activeGateway = await getActivePixGateway(env);
+  let activeGateway;
+  try {
+    activeGateway = await getActivePixGateway(env);
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error.message }), { status: 503, headers: corsHeaders });
+  }
 
   if (!activeGateway) {
     return new Response(
-      JSON.stringify({ error: "Nenhum gateway PIX possui todas as credenciais necessárias." }),
+      JSON.stringify({ error: "Nenhum gateway PIX ativo. Selecione o gateway no painel." }),
       { status: 503, headers: corsHeaders }
     );
   }

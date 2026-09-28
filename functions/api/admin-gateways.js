@@ -5,6 +5,7 @@ import { verifyAdminToken } from "../_lib/admin-auth.js";
 import { listGateways, setGatewayEnabled } from "../_lib/gateway-config.js";
 
 const CORS = {
+  "Cache-Control": "no-store",
   "Access-Control-Allow-Origin": "*",
   "Content-Type": "application/json",
 };

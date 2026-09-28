@@ -33,7 +33,15 @@ try {
   };
   const gateways = await listGateways(env);
   assert.equal(gateways.some((gateway) => gateway.id === "venuspay_pix"), true);
+  await assert.rejects(() => getActivePixGateway(env), /credenciais/);
+  globalThis.fetch = async () => new Response(JSON.stringify([
+    { id: "venuspay_pix", name: "Venus Pay", method: "pix", enabled: true },
+  ]));
   assert.equal(await getActivePixGateway(env), "venuspay_pix");
+  globalThis.fetch = async () => new Response("[]");
+  assert.equal(await getActivePixGateway(env), null);
+  globalThis.fetch = async () => new Response("{}", { status: 503 });
+  await assert.rejects(() => getActivePixGateway(env), /consultar/);
 } finally {
   globalThis.fetch = originalFetch;
 }
