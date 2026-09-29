@@ -91,7 +91,7 @@ globalThis.fetch = async (url, options = {}) => {
     return new Response(JSON.stringify([{
       id: "pedido-cartao",
       valor: 129.9,
-      produtos: "Kit 7 em 1 Escova Secadora Bege (x1)",
+      produtos: "Kit 7 em 1 Escova Secadora Bege Bivolt com Caixa e 7 Acessórios (x1)",
       metodo_pagamento: "card",
       status: "checkout_iniciado",
     }]), { status: 200 });
@@ -140,7 +140,7 @@ try {
   const result = await response.json();
   assert.equal(result.status, "approved");
   assert.equal(gatewayPayload.amount, 155.02);
-  assert.equal(gatewayPayload.product.name, "Kit 7 em 1 Escova Secadora Bege (x1)");
+  assert.equal(gatewayPayload.product.name, "Kit 7 em 1 Escova Secadora Bege Bivolt com Caixa e 7 Acessórios (x1)");
 } finally {
   globalThis.fetch = originalFetch;
 }

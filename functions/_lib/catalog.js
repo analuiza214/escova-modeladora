@@ -6,13 +6,13 @@ const PRODUCTS = new Map([
   ["bella-escova-verde", { name: "Escova Modeladora Verde Bivolt com Luva, Caixa e 2 Prendedores", price: 69.9, pixPrice: 62.91 }],
   ["bella-escova-lilas", { name: "Escova Modeladora Lilás Bivolt com Luva, Caixa e 2 Prendedores", price: 69.9, pixPrice: 62.91 }],
   ["bella-escova-dourada", { name: "Escova Modeladora Dourada Bivolt com Luva, Caixa e 2 Prendedores", price: 69.9, pixPrice: 62.91 }],
-  ["bella-kit-7-em-1-azul-ceu", { name: "Kit 7 em 1 Escova Secadora Azul Céu", price: 129.9, pixPrice: 116.91 }],
-  ["bella-kit-7-em-1-bege", { name: "Kit 7 em 1 Escova Secadora Bege", price: 129.9, pixPrice: 116.91 }],
-  ["bella-kit-7-em-1-branca", { name: "Kit 7 em 1 Escova Secadora Branca", price: 129.9, pixPrice: 116.91 }],
-  ["bella-kit-7-em-1-lilas", { name: "Kit 7 em 1 Escova Secadora Lilás", price: 129.9, pixPrice: 116.91 }],
-  ["bella-kit-7-em-1-preta", { name: "Kit 7 em 1 Escova Secadora Preta", price: 129.9, pixPrice: 116.91 }],
-  ["bella-kit-7-em-1-rose", { name: "Kit 7 em 1 Escova Secadora Rosê", price: 129.9, pixPrice: 116.91 }],
-  ["bella-kit-7-em-1-verde", { name: "Kit 7 em 1 Escova Secadora Verde", price: 129.9, pixPrice: 116.91 }],
+  ["bella-kit-7-em-1-azul-ceu", { name: "Kit 7 em 1 Escova Secadora Azul Céu Bivolt com Caixa e 7 Acessórios", price: 129.9, pixPrice: 116.91 }],
+  ["bella-kit-7-em-1-bege", { name: "Kit 7 em 1 Escova Secadora Bege Bivolt com Caixa e 7 Acessórios", price: 129.9, pixPrice: 116.91 }],
+  ["bella-kit-7-em-1-branca", { name: "Kit 7 em 1 Escova Secadora Branca Bivolt com Caixa e 7 Acessórios", price: 129.9, pixPrice: 116.91 }],
+  ["bella-kit-7-em-1-lilas", { name: "Kit 7 em 1 Escova Secadora Lilás Bivolt com Caixa e 7 Acessórios", price: 129.9, pixPrice: 116.91 }],
+  ["bella-kit-7-em-1-preta", { name: "Kit 7 em 1 Escova Secadora Preta Bivolt com Caixa e 7 Acessórios", price: 129.9, pixPrice: 116.91 }],
+  ["bella-kit-7-em-1-rose", { name: "Kit 7 em 1 Escova Secadora Rosê Bivolt com Caixa e 7 Acessórios", price: 129.9, pixPrice: 116.91 }],
+  ["bella-kit-7-em-1-verde", { name: "Kit 7 em 1 Escova Secadora Verde Bivolt com Caixa e 7 Acessórios", price: 129.9, pixPrice: 116.91 }],
 ]);
 
 export function validateCartItems(rawItems, method) {

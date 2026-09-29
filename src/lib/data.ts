@@ -204,7 +204,7 @@ export const products: Product[] = [
   {
     "id": "bella-kit-7-em-1-azul-ceu",
     "slug": "kit-7-em-1-azul-ceu",
-    "name": "Kit 7 em 1 Escova Secadora Azul Céu",
+    "name": "Kit 7 em 1 Escova Secadora Azul Céu Bivolt com Caixa e 7 Acessórios",
     "price": 129.9,
     "pixPrice": 116.91,
     "installment": "5x R$ 25,98 sem juros",
@@ -226,7 +226,7 @@ export const products: Product[] = [
   {
     "id": "bella-kit-7-em-1-bege",
     "slug": "kit-7-em-1-bege",
-    "name": "Kit 7 em 1 Escova Secadora Bege",
+    "name": "Kit 7 em 1 Escova Secadora Bege Bivolt com Caixa e 7 Acessórios",
     "price": 129.9,
     "pixPrice": 116.91,
     "installment": "5x R$ 25,98 sem juros",
@@ -252,7 +252,7 @@ export const products: Product[] = [
   {
     "id": "bella-kit-7-em-1-branca",
     "slug": "kit-7-em-1-branca",
-    "name": "Kit 7 em 1 Escova Secadora Branca",
+    "name": "Kit 7 em 1 Escova Secadora Branca Bivolt com Caixa e 7 Acessórios",
     "price": 129.9,
     "pixPrice": 116.91,
     "installment": "5x R$ 25,98 sem juros",
@@ -273,7 +273,7 @@ export const products: Product[] = [
   {
     "id": "bella-kit-7-em-1-lilas",
     "slug": "kit-7-em-1-lilas",
-    "name": "Kit 7 em 1 Escova Secadora Lilás",
+    "name": "Kit 7 em 1 Escova Secadora Lilás Bivolt com Caixa e 7 Acessórios",
     "price": 129.9,
     "pixPrice": 116.91,
     "installment": "5x R$ 25,98 sem juros",
@@ -295,7 +295,7 @@ export const products: Product[] = [
   {
     "id": "bella-kit-7-em-1-preta",
     "slug": "kit-7-em-1-preta",
-    "name": "Kit 7 em 1 Escova Secadora Preta",
+    "name": "Kit 7 em 1 Escova Secadora Preta Bivolt com Caixa e 7 Acessórios",
     "price": 129.9,
     "pixPrice": 116.91,
     "installment": "5x R$ 25,98 sem juros",
@@ -319,7 +319,7 @@ export const products: Product[] = [
   {
     "id": "bella-kit-7-em-1-rose",
     "slug": "kit-7-em-1-rose",
-    "name": "Kit 7 em 1 Escova Secadora Rosê",
+    "name": "Kit 7 em 1 Escova Secadora Rosê Bivolt com Caixa e 7 Acessórios",
     "price": 129.9,
     "pixPrice": 116.91,
     "installment": "5x R$ 25,98 sem juros",
@@ -340,7 +340,7 @@ export const products: Product[] = [
   {
     "id": "bella-kit-7-em-1-verde",
     "slug": "kit-7-em-1-verde",
-    "name": "Kit 7 em 1 Escova Secadora Verde",
+    "name": "Kit 7 em 1 Escova Secadora Verde Bivolt com Caixa e 7 Acessórios",
     "price": 129.9,
     "pixPrice": 116.91,
     "installment": "5x R$ 25,98 sem juros",
