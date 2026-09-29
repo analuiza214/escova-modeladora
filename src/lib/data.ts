@@ -30,7 +30,7 @@ export const products: Product[] = [
   {
     "id": "bella-escova-branca",
     "slug": "escova-branca",
-    "name": "Escova Branca",
+    "name": "Escova Modeladora Branca Bivolt com Luva, Caixa e 2 Prendedores",
     "price": 69.9,
     "pixPrice": 62.91,
     "installment": "5x R$ 13,98 sem juros",
@@ -53,7 +53,7 @@ export const products: Product[] = [
   {
     "id": "bella-escova-preta",
     "slug": "escova-preta",
-    "name": "Escova Modeladora Preta",
+    "name": "Escova Modeladora Preta Bivolt com Luva, Caixa e 2 Prendedores",
     "price": 69.9,
     "pixPrice": 62.91,
     "installment": "5x R$ 13,98 sem juros",
@@ -79,7 +79,7 @@ export const products: Product[] = [
   {
     "id": "bella-escova-rose",
     "slug": "escova-rose",
-    "name": "Escova Modeladora Rosê",
+    "name": "Escova Modeladora Rosê Bivolt com Luva, Caixa e 2 Prendedores",
     "price": 69.9,
     "pixPrice": 62.91,
     "installment": "5x R$ 13,98 sem juros",
@@ -104,7 +104,7 @@ export const products: Product[] = [
   {
     "id": "bella-escova-azul-ceu",
     "slug": "escova-azul-ceu",
-    "name": "Escova Modeladora Azul Céu",
+    "name": "Escova Modeladora Azul Céu Bivolt com Luva, Caixa e 2 Prendedores",
     "price": 69.9,
     "pixPrice": 62.91,
     "installment": "5x R$ 13,98 sem juros",
@@ -129,7 +129,7 @@ export const products: Product[] = [
   {
     "id": "bella-escova-verde",
     "slug": "escova-verde",
-    "name": "Escova Modeladora Verde",
+    "name": "Escova Modeladora Verde Bivolt com Luva, Caixa e 2 Prendedores",
     "price": 69.9,
     "pixPrice": 62.91,
     "installment": "5x R$ 13,98 sem juros",
@@ -154,7 +154,7 @@ export const products: Product[] = [
   {
     "id": "bella-escova-lilas",
     "slug": "escova-lilas",
-    "name": "Escova Modeladora Lilás",
+    "name": "Escova Modeladora Lilás Bivolt com Luva, Caixa e 2 Prendedores",
     "price": 69.9,
     "pixPrice": 62.91,
     "installment": "5x R$ 13,98 sem juros",
@@ -179,7 +179,7 @@ export const products: Product[] = [
   {
     "id": "bella-escova-dourada",
     "slug": "escova-dourada",
-    "name": "Escova Modeladora Dourada",
+    "name": "Escova Modeladora Dourada Bivolt com Luva, Caixa e 2 Prendedores",
     "price": 69.9,
     "pixPrice": 62.91,
     "installment": "5x R$ 13,98 sem juros",

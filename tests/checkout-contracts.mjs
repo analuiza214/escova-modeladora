@@ -6,7 +6,7 @@ import { getActivePixGateway, listGateways } from "../functions/_lib/gateway-con
 
 const whiteBrush = validateCartItems([{ id: "bella-escova-branca", quantity: 1 }], "card");
 assert.equal(whiteBrush.amount, 69.9);
-assert.equal(whiteBrush.products, "Escova Branca (x1)");
+assert.equal(whiteBrush.products, "Escova Modeladora Branca Bivolt com Luva, Caixa e 2 Prendedores (x1)");
 
 const pixKit = validateCartItems([{ id: "bella-kit-7-em-1-bege", quantity: 2 }], "pix");
 assert.equal(pixKit.amount, 233.82);
@@ -78,7 +78,7 @@ try {
   assert.equal(response.status, 201);
   assert.equal(writes.length, 1);
   assert.equal(writes[0].valor, 62.91);
-  assert.equal(writes[0].produtos, "Escova Branca (x1)");
+  assert.equal(writes[0].produtos, "Escova Modeladora Branca Bivolt com Luva, Caixa e 2 Prendedores (x1)");
 } finally {
   globalThis.fetch = originalFetch;
 }
