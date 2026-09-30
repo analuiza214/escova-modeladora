@@ -8,97 +8,30 @@ export function FreteGratisBar() {
 
   useEffect(() => {
     let cancelled = false;
-    let watchId: number | null = null;
-    let gpsTimer: ReturnType<typeof setTimeout> | null = null;
-    let bestPosition: GeolocationPosition | null = null;
-    let locationFinished = false;
-
     const now = new Date();
     now.setMinutes(now.getMinutes() + 30);
     const hh = String(now.getHours()).padStart(2, "0");
     const mm = String(now.getMinutes()).padStart(2, "0");
     setDeadline(`${hh}:${mm}`);
 
-    // Usa o IP somente como fallback, depois que o GPS não for autorizado
-    // ou não conseguir determinar a localização.
-    function fetchByIp() {
-      fetch("https://ipapi.co/json/")
-        .then(r => r.json())
-        .then(d => { if (!cancelled && d.city) setCidade(d.city); })
-        .catch(() => {});
-    }
-
-    function stopGpsWatch() {
-      if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-      if (gpsTimer !== null) clearTimeout(gpsTimer);
-      watchId = null;
-      gpsTimer = null;
-    }
-
-    function reverseGeocode(pos: GeolocationPosition) {
-      const { latitude, longitude } = pos.coords;
-      fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1&accept-language=pt-BR&zoom=18`
-      )
-        .then(r => r.json())
-        .then(d => {
-          // Prioriza a cidade/localidade específica; municipality e county são
-          // usados apenas quando a resposta não trouxer uma cidade definida.
-          const city =
-            d.address?.city ||
-            d.address?.town ||
-            d.address?.village ||
-            d.address?.municipality ||
-            d.address?.county;
-          if (!cancelled && city) setCidade(city);
-        })
-        // Depois que o navegador forneceu coordenadas, nunca substitui o
-        // resultado pela cidade do IP da operadora.
-        .catch(() => {});
-    }
-
-    function finishGps(useIpFallback = false) {
-      if (locationFinished) return;
-      locationFinished = true;
-      stopGpsWatch();
-      // Não exibe uma cidade calculada a partir de uma coordenada imprecisa.
-      // Em computadores, uma leitura baseada na operadora pode errar dezenas
-      // de quilômetros mesmo depois de o usuário permitir a localização.
-      if (bestPosition && bestPosition.coords.accuracy <= 500) reverseGeocode(bestPosition);
-      else if (useIpFallback) fetchByIp();
-    }
-
-    // watchPosition permite aguardar uma leitura mais precisa do GPS. A primeira
-    // coordenada de computadores/celulares pode ter vários quilômetros de erro.
-    function fetchByGps() {
-      watchId = navigator.geolocation.watchPosition(
-        pos => {
-          if (!bestPosition || pos.coords.accuracy < bestPosition.coords.accuracy) bestPosition = pos;
-          // Uma margem de até 500 metros é suficiente para identificar o município
-          // rapidamente em celulares com a localização precisa ativada.
-          if (pos.coords.accuracy <= 500) finishGps();
-        },
-        error => {
-          if (error.code === error.PERMISSION_DENIED) finishGps(true);
-          else finishGps(false);
-        },
-        { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 }
-      );
-
-      // Se o aparelho não conseguir uma leitura útil, mantém a barra sem cidade.
-      gpsTimer = setTimeout(() => finishGps(false), 30000);
-
-    }
-
-    if ("geolocation" in navigator) {
-      fetchByGps();
-    } else {
-      fetchByIp();
-    }
+    // Cidade aproximada pelo IP: não acessa o GPS nem solicita permissão.
+    const controller = new AbortController();
+    fetch("https://ipapi.co/json/", { signal: controller.signal })
+      .then(response => {
+        if (!response.ok) throw new Error("Localização indisponível");
+        return response.json();
+      })
+      .then(data => {
+        if (!cancelled && typeof data.city === "string" && data.city.trim()) {
+          setCidade(data.city.trim());
+        }
+      })
+      // Se a consulta falhar, a barra continua funcionando sem exibir cidade.
+      .catch(() => {});
 
     return () => {
       cancelled = true;
-      stopGpsWatch();
+      controller.abort();
     };
   }, []);
 
