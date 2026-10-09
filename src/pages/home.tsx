@@ -338,7 +338,12 @@ export default function Home() {
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-4">
             <span className="inline-block text-xs font-black tracking-widest uppercase text-red-600 mb-1">▶ Veja o resultado antes de comprar</span>
-            <h2 className="text-xl sm:text-2xl font-black text-gray-900">Essa Escova Alisa Seca e Modela seu Cabelo em 5 Minutos</h2>
+            <h2 className="text-xl sm:text-2xl font-black text-gray-900 leading-snug">
+              Essa Escova Alisa Seca e Modela seu Cabelo{" "}
+              <span className="inline-block bg-amber-200/70 text-gray-950 px-2 py-0.5 rounded-md border border-amber-300/60 shadow-2xs">
+                em 5 Minutos
+              </span>
+            </h2>
           </div>
           <div className="rounded-2xl overflow-hidden shadow-lg"
             style={{ border: "2px solid #e5e7eb", boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}>
