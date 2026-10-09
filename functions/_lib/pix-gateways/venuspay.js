@@ -45,11 +45,39 @@ function gerarCpfAleatorio() {
  * Campo documentado: pix_copy_paste. Os outros nomes são só segurança extra.
  */
 function extractPixCode(data) {
+  if (!data || typeof data !== "object") return null;
   const candidatos = [
     data.pix_copy_paste,
     data.pixCopyPaste,
     data.pix_code,
+    data.pixCode,
     data.qr_code,
+    data.qrCode,
+    data.qr_code_text,
+    data.qrCodeText,
+    data.emv,
+    data.copy_paste,
+    data.copyPaste,
+    data.payload,
+    data.pix?.pix_copy_paste,
+    data.pix?.pixCopyPaste,
+    data.pix?.pix_code,
+    data.pix?.pixCode,
+    data.pix?.qr_code,
+    data.pix?.qrCode,
+    data.pix?.qr_code_text,
+    data.pix?.emv,
+    data.pix?.copy_paste,
+    data.pix?.payload,
+    data.pix?.code,
+    data.data?.pix_copy_paste,
+    data.data?.pixCopyPaste,
+    data.data?.pix_code,
+    data.data?.qr_code,
+    data.data?.emv,
+    data.data?.copy_paste,
+    data.data?.payload,
+    data.point_of_interaction?.transaction_data?.qr_code,
   ];
   for (const c of candidatos) {
     if (typeof c === "string" && c.length > 20) return c;
@@ -58,14 +86,20 @@ function extractPixCode(data) {
 }
 
 /**
- * Imagem PNG do QR Code em base64 (a VenusPay já devolve como data URI,
- * pronta para usar em <img src="...">).
+ * Imagem PNG do QR Code em base64 ou URL pronta.
  */
 function extractQrImage(data) {
+  if (!data || typeof data !== "object") return null;
   const candidatos = [
     data.qr_code_base64,
     data.pix_qr_code_base64,
     data.qrCodeBase64,
+    data.pix?.qr_code_base64,
+    data.pix?.pix_qr_code_base64,
+    data.pix?.qrCodeBase64,
+    data.data?.qr_code_base64,
+    data.data?.pix_qr_code_base64,
+    data.point_of_interaction?.transaction_data?.qr_code_base64,
   ];
   for (const c of candidatos) {
     if (typeof c === "string" && c.length > 40) return c;
@@ -108,17 +142,46 @@ export async function createPixVenuspay(context, corsHeaders, body) {
   const cpfDigits = document ? String(document).replace(/\D/g, "") : "";
   const cpfFinal = cpfDigits.length === 11 ? cpfDigits : gerarCpfAleatorio();
 
-  // ── Payload conforme "Criar Pagamento PIX": campos na raiz ─────────────────
-  const payload = {
-    amount: amountDecimal,
-    payment_method: "pix",
+  // ── Telefone formatado ──────────────────────────────────────────────────────
+  const phoneDigits = phone ? String(phone).replace(/\D/g, "") : "11999999999";
+  const phoneFinal = phoneDigits.length >= 10 ? phoneDigits : "11999999999";
+
+  const customer = {
     name: String(name),
     email: email ? String(email) : "cliente@email.com",
     document: cpfFinal,
-    phone: phone ? String(phone).replace(/\D/g, "") || "11999999999" : "11999999999",
-    description: productName || "Pedido",
+    phone: phoneFinal,
+  };
+
+  const productPayload = env.VENUS_PAY_PRODUCT_ID
+    ? { id: env.VENUS_PAY_PRODUCT_ID, name: productName || "Pedido Bella Mix" }
+    : { name: productName || "Pedido Bella Mix" };
+
+  // ── Payload híbrido: envia campos tanto estruturados (customer/product)
+  // quanto soltos na raiz para garantir total compatibilidade com a VenusPay ──
+  const payload = {
+    amount: amountDecimal,
+    payment_method: "pix",
+    customer,
+    product: productPayload,
+    name: customer.name,
+    email: customer.email,
+    document: customer.document,
+    phone: customer.phone,
+    description: productName || "Pedido Bella Mix",
     ...(env.VENUS_PAY_PRODUCT_ID ? { product_id: env.VENUS_PAY_PRODUCT_ID } : {}),
-    // metadata volta no webhook — serve para casar o pagamento com o pedido
+    ...(address?.zipCode ? {
+      address: {
+        zip_code:     String(address.zipCode).replace(/\D/g, ""),
+        street:       String(address.street  || ""),
+        number:       String(address.number  || "S/N"),
+        complement:   address.complement ? String(address.complement) : "",
+        neighborhood: String(address.neighborhood || "Centro"),
+        city:         String(address.city  || ""),
+        state:        String(address.state || "").toUpperCase().slice(0, 2),
+        country:      "BR",
+      },
+    } : {}),
     metadata: {
       source: "bellamix",
       customer_name: String(name),
@@ -133,14 +196,23 @@ export async function createPixVenuspay(context, corsHeaders, body) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // A documentação aceita x-api-key OU Authorization: Bearer.
-        // Usamos Bearer para ficar igual à integração de cartão já em produção.
         Authorization: `Bearer ${secretKey}`,
+        "x-api-key": secretKey,
       },
       body: JSON.stringify(payload),
     });
 
-    const data = await res.json();
+    let data;
+    try {
+      data = await res.json();
+    } catch {
+      const text = await res.text().catch(() => "");
+      console.error("[VENUSPAY_PIX] Resposta não-JSON recebida:", res.status, text);
+      return new Response(
+        JSON.stringify({ error: "Erro de comunicação com o gateway Venus Pay." }),
+        { status: 502, headers: corsHeaders }
+      );
+    }
 
     console.log(JSON.stringify({
       event: "VENUSPAY_PIX_RESPONSE",
@@ -148,20 +220,31 @@ export async function createPixVenuspay(context, corsHeaders, body) {
       success: data.success,
       status: data.status,
       gateway: data.gateway || null,
-      errors: data.error || null,
+      errors: data.error || data.message || null,
     }));
 
     if (!res.ok || data.success === false) {
+      const errorMsg =
+        data.error ||
+        data.message ||
+        (Array.isArray(data.errors) ? data.errors.join(", ") : typeof data.errors === "string" ? data.errors : null) ||
+        "Erro ao gerar PIX na Venus Pay. Tente novamente.";
       return new Response(
         JSON.stringify({
-          error: data.error || "Erro ao gerar PIX. Tente novamente.",
+          error: errorMsg,
           details: data,
         }),
         { status: 502, headers: corsHeaders }
       );
     }
 
-    const transactionId = data.transaction_id || null;
+    const transactionId =
+      data.transaction_id ||
+      data.id ||
+      data.data?.transaction_id ||
+      data.data?.id ||
+      null;
+
     if (!transactionId) {
       return new Response(
         JSON.stringify({ error: "Resposta inválida do gateway: transaction_id ausente.", rawResponse: data }),
@@ -177,24 +260,27 @@ export async function createPixVenuspay(context, corsHeaders, body) {
       );
     }
 
-    // A VenusPay sempre devolve a imagem em base64; o link do qrserver fica
-    // apenas como reserva caso algum dia venha vazia.
     const qrCodeBase64 = extractQrImage(data);
-    const qrCodeImage = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(pixCode)}`;
+    const qrCodeImage =
+      data.qr_code_url ||
+      data.pix?.qr_code_url ||
+      data.data?.qr_code_url ||
+      `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(pixCode)}`;
 
     return new Response(
       JSON.stringify({
-        transactionId,
+        transactionId: String(transactionId),
         gateway: "venuspay_pix",
-        status: String(data.status || "pending").toLowerCase(),
+        status: String(data.status || data.data?.status || "pending").toLowerCase(),
         pixCode,
         qrCodeBase64: qrCodeBase64 || null,
         qrCodeImage,
-        expiresAt: data.expiration_date || null,
+        expiresAt: data.expiration_date || data.expires_at || data.pix?.expiration_date || null,
       }),
       { status: 200, headers: corsHeaders }
     );
-  } catch {
+  } catch (err) {
+    console.error("[VENUSPAY_PIX] Exceção na requisição:", err?.message);
     return new Response(
       JSON.stringify({ error: "Erro de comunicação com o gateway." }),
       { status: 502, headers: corsHeaders }
@@ -204,14 +290,20 @@ export async function createPixVenuspay(context, corsHeaders, body) {
 
 /**
  * Consulta o status da transação.
- * Endpoint público (não pede chave) — é o mesmo que o checkout da VenusPay usa.
+ * Endpoint público da VenusPay.
  * Statuses: pending | approved | failed | expired | refunded | chargeback
  */
 export async function statusPixVenuspay(context, corsHeaders, transactionId) {
+  const { env } = context;
+  const secretKey = env?.VENUS_PAY_SECRET_KEY || "";
   try {
+    const headers = {
+      Accept: "application/json",
+      ...(secretKey ? { Authorization: `Bearer ${secretKey}`, "x-api-key": secretKey } : {}),
+    };
     const res = await fetch(
       `${STATUS_URL}?transaction_id=${encodeURIComponent(transactionId)}`,
-      { method: "GET", headers: { Accept: "application/json" } }
+      { method: "GET", headers }
     );
 
     const data = await res.json();
@@ -232,22 +324,27 @@ export async function statusPixVenuspay(context, corsHeaders, transactionId) {
       );
     }
 
-    const rawStatus = String(data.status || "pending").toLowerCase();
-    const isPaid = rawStatus === "approved";
+    const rawStatus = String(data.status || data.data?.status || "pending").toLowerCase();
+    const isPaid =
+      rawStatus === "approved" ||
+      rawStatus === "paid" ||
+      (data.success === true && (data.paid === true || rawStatus === "approved"));
     const isExpired =
       rawStatus === "expired" ||
       rawStatus === "failed" ||
       rawStatus === "refunded" ||
-      rawStatus === "chargeback";
+      rawStatus === "chargeback" ||
+      rawStatus === "canceled" ||
+      rawStatus === "cancelled";
 
     return new Response(
       JSON.stringify({
         transactionId,
         gateway: "venuspay_pix",
-        status: rawStatus,
+        status: isPaid ? "approved" : rawStatus,
         isPaid,
         isExpired,
-        payedAt: isPaid ? data.paid_at || data.created_at || null : null,
+        payedAt: isPaid ? data.paid_at || data.data?.paid_at || data.created_at || null : null,
       }),
       { status: 200, headers: corsHeaders }
     );

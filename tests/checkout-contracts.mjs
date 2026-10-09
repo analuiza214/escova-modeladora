@@ -2,16 +2,17 @@ import assert from "node:assert/strict";
 import { cardAmount, validateCartItems } from "../functions/_lib/catalog.js";
 import { onRequest as createOrder } from "../functions/api/orders/create.js";
 import { onRequest as createCard } from "../functions/api/card/create.js";
+import { createPixVenuspay } from "../functions/_lib/pix-gateways/venuspay.js";
 import { getActivePixGateway, listGateways } from "../functions/_lib/gateway-config.js";
 
 const whiteBrush = validateCartItems([{ id: "bella-escova-branca", quantity: 1 }], "card");
-assert.equal(whiteBrush.amount, 69.9);
-assert.equal(whiteBrush.products, "Escova Modeladora Branca Bivolt com Luva, Caixa e 2 Prendedores (x1)");
+assert.equal(whiteBrush.amount, 37.9);
+assert.equal(whiteBrush.products, "Kit Escova 3 em 1 Branca (x1)");
 
 const pixKit = validateCartItems([{ id: "bella-kit-7-em-1-bege", quantity: 2 }], "pix");
-assert.equal(pixKit.amount, 233.82);
-assert.equal(cardAmount(129.9, 5), 129.9);
-assert.equal(cardAmount(129.9, 6), 155.02);
+assert.equal(pixKit.amount, 125.82);
+assert.equal(cardAmount(69.9, 5), 69.9);
+assert.equal(cardAmount(69.9, 6), 83.42);
 assert.throws(() => validateCartItems([{ id: "produto-inventado", quantity: 1 }], "pix"));
 
 const originalFetch = globalThis.fetch;
@@ -77,8 +78,8 @@ try {
   });
   assert.equal(response.status, 201);
   assert.equal(writes.length, 1);
-  assert.equal(writes[0].valor, 62.91);
-  assert.equal(writes[0].produtos, "Escova Modeladora Branca Bivolt com Luva, Caixa e 2 Prendedores (x1)");
+  assert.equal(writes[0].valor, 34.11);
+  assert.equal(writes[0].produtos, "Kit Escova 3 em 1 Branca (x1)");
 } finally {
   globalThis.fetch = originalFetch;
 }
@@ -90,7 +91,7 @@ globalThis.fetch = async (url, options = {}) => {
   if (address.includes("leads?id=eq.pedido-cartao") && (!options.method || options.method === "GET")) {
     return new Response(JSON.stringify([{
       id: "pedido-cartao",
-      valor: 129.9,
+      valor: 69.9,
       produtos: "Kit 7 em 1 Escova Secadora Bege Bivolt com Caixa e 7 Acessórios (x1)",
       metodo_pagamento: "card",
       status: "checkout_iniciado",
@@ -139,8 +140,56 @@ try {
   });
   const result = await response.json();
   assert.equal(result.status, "approved");
-  assert.equal(gatewayPayload.amount, 155.02);
+  assert.equal(gatewayPayload.amount, 83.42);
   assert.equal(gatewayPayload.product.name, "Kit 7 em 1 Escova Secadora Bege Bivolt com Caixa e 7 Acessórios (x1)");
+} finally {
+  globalThis.fetch = originalFetch;
+}
+
+let venusPixPayload;
+let venusHeaders;
+globalThis.fetch = async (url, options = {}) => {
+  const address = String(url);
+  if (address.includes("process-payment")) {
+    venusPixPayload = JSON.parse(options.body);
+    venusHeaders = options.headers;
+    return new Response(JSON.stringify({
+      success: true,
+      status: "pending",
+      transaction_id: "tx-pix-venus-1",
+      pix_copy_paste: "00020126580014br.gov.bcb.pix0136123e4567-e89b-12d3-a456-426614174000520400005303986540534.115802BR5913BELLA MIX6009SAO PAULO62070503***6304ABCD",
+      qr_code_base64: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+    }), { status: 200 });
+  }
+  throw new Error(`Chamada inesperada no teste: ${address}`);
+};
+
+try {
+  const response = await createPixVenuspay(
+    { env: { VENUS_PAY_SECRET_KEY: "secret-test", VENUS_PAY_PRODUCT_ID: "prod-123" } },
+    { "Content-Type": "application/json" },
+    {
+      amount: 34.11,
+      name: "Cliente Teste",
+      email: "cliente@example.com",
+      phone: "11999999999",
+      document: "12345678909",
+      productName: "Kit Escova 3 em 1 Branca",
+    }
+  );
+  assert.equal(response.status, 200);
+  const data = await response.json();
+  assert.equal(data.gateway, "venuspay_pix");
+  assert.equal(data.transactionId, "tx-pix-venus-1");
+  assert.equal(data.pixCode.startsWith("000201"), true);
+  assert.equal(data.qrCodeBase64.startsWith("data:image/png"), true);
+  assert.equal(venusPixPayload.payment_method, "pix");
+  assert.equal(venusPixPayload.customer.name, "Cliente Teste");
+  assert.equal(venusPixPayload.customer.document, "12345678909");
+  assert.equal(venusPixPayload.product.name, "Kit Escova 3 em 1 Branca");
+  assert.equal(venusPixPayload.name, "Cliente Teste");
+  assert.equal(venusHeaders["x-api-key"], "secret-test");
+  assert.equal(venusHeaders["Authorization"], "Bearer secret-test");
 } finally {
   globalThis.fetch = originalFetch;
 }
