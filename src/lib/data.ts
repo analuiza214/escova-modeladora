@@ -102,128 +102,6 @@ export const products: Product[] = [
     "productReviews": []
   },
   {
-    "id": "bella-escova-azul-ceu",
-    "slug": "escova-azul-ceu",
-    "name": "Escova Modeladora Azul Céu Bivolt com Luva, Caixa e 2 Prendedores",
-    "price": 69.9,
-    "pixPrice": 62.91,
-    "installment": "5x R$ 13,98 sem juros",
-    "rating": 4.9,
-    "reviewCount": 267,
-    "soldCount": "384 vendidos",
-    "description": "Escova modeladora na cor azul céu, com visor digital e controles de temperatura. Veja os detalhes na galeria.",
-    "mainImage": "/images/escova-azul-ceu/1.webp",
-    "gallery": [
-      "/images/escova-azul-ceu/1.webp",
-      "/images/escova-azul-ceu/2.webp",
-      "/images/escova-azul-ceu/3.webp",
-      "/images/escova-azul-ceu/4.webp"
-    ],
-    "features": [
-      "Cor azul céu",
-      "Visor digital",
-      "Controles de temperatura"
-    ],
-    "productReviews": []
-  },
-  {
-    "id": "bella-escova-verde",
-    "slug": "escova-verde",
-    "name": "Escova Modeladora Verde Bivolt com Luva, Caixa e 2 Prendedores",
-    "price": 69.9,
-    "pixPrice": 62.91,
-    "installment": "5x R$ 13,98 sem juros",
-    "rating": 4.7,
-    "reviewCount": 638,
-    "soldCount": "742 vendidos",
-    "description": "Escova modeladora na cor verde, com visor digital e controles de temperatura. Veja os detalhes na galeria.",
-    "mainImage": "/images/escova-verde/1.webp",
-    "gallery": [
-      "/images/escova-verde/1.webp",
-      "/images/escova-verde/2.webp",
-      "/images/escova-verde/3.webp",
-      "/images/escova-verde/4.webp"
-    ],
-    "features": [
-      "Cor verde",
-      "Visor digital",
-      "Controles de temperatura"
-    ],
-    "productReviews": []
-  },
-  {
-    "id": "bella-escova-lilas",
-    "slug": "escova-lilas",
-    "name": "Escova Modeladora Lilás Bivolt com Luva, Caixa e 2 Prendedores",
-    "price": 69.9,
-    "pixPrice": 62.91,
-    "installment": "5x R$ 13,98 sem juros",
-    "rating": 4.9,
-    "reviewCount": 305,
-    "soldCount": "476 vendidos",
-    "description": "Escova modeladora na cor lilás, com visor digital e controles de temperatura. Veja os detalhes na galeria.",
-    "mainImage": "/images/escova-lilas/1.webp",
-    "gallery": [
-      "/images/escova-lilas/1.webp",
-      "/images/escova-lilas/2.webp",
-      "/images/escova-lilas/3.webp",
-      "/images/escova-lilas/4.webp"
-    ],
-    "features": [
-      "Cor lilás",
-      "Visor digital",
-      "Controles de temperatura"
-    ],
-    "productReviews": []
-  },
-  {
-    "id": "bella-escova-dourada",
-    "slug": "escova-dourada",
-    "name": "Escova Modeladora Dourada Bivolt com Luva, Caixa e 2 Prendedores",
-    "price": 69.9,
-    "pixPrice": 62.91,
-    "installment": "5x R$ 13,98 sem juros",
-    "rating": 4.8,
-    "reviewCount": 524,
-    "soldCount": "618 vendidos",
-    "description": "Escova modeladora na cor dourada, com visor digital e controles de temperatura. Veja os detalhes na galeria.",
-    "mainImage": "/images/escova-dourada/1.webp",
-    "gallery": [
-      "/images/escova-dourada/1.webp",
-      "/images/escova-dourada/2.webp",
-      "/images/escova-dourada/3.webp",
-      "/images/escova-dourada/4.webp"
-    ],
-    "features": [
-      "Cor dourada",
-      "Visor digital",
-      "Controles de temperatura"
-    ],
-    "productReviews": []
-  },
-  {
-    "id": "bella-kit-7-em-1-azul-ceu",
-    "slug": "kit-7-em-1-azul-ceu",
-    "name": "Kit 7 em 1 Escova Secadora Azul Céu Bivolt com Caixa e 7 Acessórios",
-    "price": 129.9,
-    "pixPrice": 116.91,
-    "installment": "5x R$ 25,98 sem juros",
-    "rating": 4.9,
-    "reviewCount": 451,
-    "soldCount": "537 vendidos",
-    "description": "Kit de escova secadora com sete acessórios para diferentes estilos, na cor azul céu. Confira os componentes e detalhes na galeria.",
-    "mainImage": "/images/kit-7-em-1-azul-ceu/1.webp",
-    "gallery": [
-      "/images/kit-7-em-1-azul-ceu/1.webp",
-      "/images/kit-7-em-1-azul-ceu/2.webp"
-    ],
-    "features": [
-      "Cor azul céu",
-      "Kit com 7 acessórios"
-    ],
-    "productReviews": []
-  },
-  {
     "id": "bella-kit-7-em-1-bege",
     "slug": "kit-7-em-1-bege",
     "name": "Kit 7 em 1 Escova Secadora Bege Bivolt com Caixa e 7 Acessórios",
@@ -271,28 +149,6 @@ export const products: Product[] = [
     "productReviews": []
   },
   {
-    "id": "bella-kit-7-em-1-lilas",
-    "slug": "kit-7-em-1-lilas",
-    "name": "Kit 7 em 1 Escova Secadora Lilás Bivolt com Caixa e 7 Acessórios",
-    "price": 129.9,
-    "pixPrice": 116.91,
-    "installment": "5x R$ 25,98 sem juros",
-    "rating": 4.8,
-    "reviewCount": 238,
-    "soldCount": "327 vendidos",
-    "description": "Kit de escova secadora com sete acessórios para diferentes estilos, na cor lilás. Confira os componentes e detalhes na galeria.",
-    "mainImage": "/images/kit-7-em-1-lilas/1.webp",
-    "gallery": [
-      "/images/kit-7-em-1-lilas/1.webp",
-      "/images/kit-7-em-1-lilas/2.webp"
-    ],
-    "features": [
-      "Cor lilás",
-      "Kit com 7 acessórios"
-    ],
-    "productReviews": []
-  },
-  {
     "id": "bella-kit-7-em-1-preta",
     "slug": "kit-7-em-1-preta",
     "name": "Kit 7 em 1 Escova Secadora Preta Bivolt com Caixa e 7 Acessórios",
@@ -312,49 +168,6 @@ export const products: Product[] = [
     ],
     "features": [
       "Cor preta",
-      "Kit com 7 acessórios"
-    ],
-    "productReviews": []
-  },
-  {
-    "id": "bella-kit-7-em-1-rose",
-    "slug": "kit-7-em-1-rose",
-    "name": "Kit 7 em 1 Escova Secadora Rosê Bivolt com Caixa e 7 Acessórios",
-    "price": 129.9,
-    "pixPrice": 116.91,
-    "installment": "5x R$ 25,98 sem juros",
-    "rating": 4.8,
-    "reviewCount": 364,
-    "soldCount": "455 vendidos",
-    "description": "Kit de escova secadora com sete acessórios para diferentes estilos, na cor rosê. Confira os componentes e detalhes na galeria.",
-    "mainImage": "/images/kit-7-em-1-rose/1.webp",
-    "gallery": [
-      "/images/kit-7-em-1-rose/1.webp"
-    ],
-    "features": [
-      "Cor rosê",
-      "Kit com 7 acessórios"
-    ],
-    "productReviews": []
-  },
-  {
-    "id": "bella-kit-7-em-1-verde",
-    "slug": "kit-7-em-1-verde",
-    "name": "Kit 7 em 1 Escova Secadora Verde Bivolt com Caixa e 7 Acessórios",
-    "price": 129.9,
-    "pixPrice": 116.91,
-    "installment": "5x R$ 25,98 sem juros",
-    "rating": 4.7,
-    "reviewCount": 286,
-    "soldCount": "349 vendidos",
-    "description": "Kit de escova secadora com sete acessórios para diferentes estilos, na cor verde. Confira os componentes e detalhes na galeria.",
-    "mainImage": "/images/kit-7-em-1-verde/1.webp",
-    "gallery": [
-      "/images/kit-7-em-1-verde/1.webp",
-      "/images/kit-7-em-1-verde/2.webp"
-    ],
-    "features": [
-      "Cor verde",
       "Kit com 7 acessórios"
     ],
     "productReviews": []
