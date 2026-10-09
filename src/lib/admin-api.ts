@@ -9,7 +9,7 @@ export interface Lead {
   produtos: string;
   valor: string;
   metodo_pagamento: string;
-  status: string;
+  status: string;s
   created_at: string;
   updated_at: string;
   transaction_id?: string | null;
