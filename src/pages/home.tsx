@@ -320,12 +320,12 @@ export default function Home() {
             onClick={() => document.getElementById("kits")?.scrollIntoView({ behavior: "smooth" })}
           >
             <img
-              src={getImagePath("/images/Banner-Escova-Modeladora-3-em-1-Qualidade-Maxima-2X.png")}
-              alt="Kit 7 em 1 Escova Secadora com maleta por R$ 129,90"
+              src={getImagePath("/images/banner-principal.jpg")}
+              alt="Escova Modeladora Gokoco 3 em 1 - Seca, Alisa e Modela por R$ 37,90"
               className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-[1.01]"
               fetchPriority="high"
               decoding="sync"
-              width={1536}
+              width={828}
               height={1024}
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 rounded-2xl" />
