@@ -194,4 +194,26 @@ try {
   globalThis.fetch = originalFetch;
 }
 
+globalThis.fetch = async () => new Response(JSON.stringify({
+  success: true,
+  data: {
+    id: "tx-pix-venus-nested",
+    status: "pending",
+    pix: { copy_paste: "00020126580014br.gov.bcb.pix0136123e4567-e89b-12d3-a456-426614174000520400005303986540534.115802BR5913BELLA MIX6009SAO PAULO62070503***6304ABCD" },
+  },
+}), { status: 200 });
+try {
+  const response = await createPixVenuspay(
+    { env: { VENUS_PAY_SECRET_KEY: "secret-test" } },
+    { "Content-Type": "application/json" },
+    { amount: 34.11, name: "Cliente Teste" }
+  );
+  assert.equal(response.status, 200);
+  const data = await response.json();
+  assert.equal(data.transactionId, "tx-pix-venus-nested");
+  assert.equal(data.pixCode.startsWith("000201"), true);
+} finally {
+  globalThis.fetch = originalFetch;
+}
+
 console.log("Contratos do checkout validados.");

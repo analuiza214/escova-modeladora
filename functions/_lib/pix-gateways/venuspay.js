@@ -68,6 +68,7 @@ function extractPixCode(data) {
     data.pix?.qr_code_text,
     data.pix?.emv,
     data.pix?.copy_paste,
+    data.pix?.copyPaste,
     data.pix?.payload,
     data.pix?.code,
     data.data?.pix_copy_paste,
@@ -77,6 +78,11 @@ function extractPixCode(data) {
     data.data?.emv,
     data.data?.copy_paste,
     data.data?.payload,
+    data.data?.pix?.copy_paste,
+    data.data?.pix?.copyPaste,
+    data.data?.pix?.pix_copy_paste,
+    data.data?.pix?.qr_code,
+    data.data?.pix?.emv,
     data.point_of_interaction?.transaction_data?.qr_code,
   ];
   for (const c of candidatos) {
@@ -99,6 +105,8 @@ function extractQrImage(data) {
     data.pix?.qrCodeBase64,
     data.data?.qr_code_base64,
     data.data?.pix_qr_code_base64,
+    data.data?.pix?.qr_code_base64,
+    data.data?.pix?.qrCodeBase64,
     data.point_of_interaction?.transaction_data?.qr_code_base64,
   ];
   for (const c of candidatos) {
@@ -243,6 +251,8 @@ export async function createPixVenuspay(context, corsHeaders, body) {
       data.id ||
       data.data?.transaction_id ||
       data.data?.id ||
+      data.data?.payment?.transaction_id ||
+      data.data?.payment?.id ||
       null;
 
     if (!transactionId) {
