@@ -1,7 +1,23 @@
 declare global {
   interface Window {
     dataLayer: Record<string, unknown>[];
+    gtag?: (...args: unknown[]) => void;
   }
+}
+
+export function trackGoogleAdsPurchase(amount: number, transactionId: string): void {
+  if (!Number.isFinite(amount) || amount <= 0 || !transactionId || typeof window.gtag !== "function") return;
+  const key = `bellamix_google_ads_purchase_${transactionId}`;
+  try {
+    if (localStorage.getItem(key)) return;
+    localStorage.setItem(key, "1");
+  } catch { /* Storage may be unavailable; the transaction ID still helps deduplicate. */ }
+  window.gtag("event", "conversion", {
+    send_to: "AW-18518738981/_4X2CPOL_Z8dEKWQtv5E",
+    value: amount,
+    currency: "BRL",
+    transaction_id: transactionId,
+  });
 }
 
 export function saveTrackingParams(): void {

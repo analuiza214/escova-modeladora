@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { X, AlertCircle, RefreshCw, CreditCard, Copy, CheckCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { pushEcommerceEvent } from "@/lib/tracking";
+import { pushEcommerceEvent, trackGoogleAdsPurchase } from "@/lib/tracking";
 import { useCart } from "@/hooks/use-cart";
 
 type Phase = "loading" | "reveal" | "content";
@@ -258,7 +258,15 @@ function Countdown({ seconds }: { seconds: number }) {
   );
 }
 
-function fireTrackingEvents(amount: number, productName: string) {
+function fireTrackingEvents(amount: number, productName: string, transactionId: string) {
+  let orderId = transactionId;
+  if (!orderId) {
+    try {
+      const checkout = JSON.parse(sessionStorage.getItem("checkoutData") || "null") as { orderId?: string } | null;
+      orderId = checkout?.orderId || "";
+    } catch { /* No order ID available. */ }
+  }
+  trackGoogleAdsPurchase(amount, orderId);
   try {
     const utmify = (window as unknown as Record<string, unknown>).utmify as ((...a: unknown[]) => void) | undefined;
     if (typeof utmify === "function") {
@@ -352,7 +360,7 @@ export default function Success() {
     // Dispara eventos de Purchase imediatamente ao confirmar
     if (!trackingFired.current) {
       trackingFired.current = true;
-      fireTrackingEvents(cardAmount, cardProduct);
+      fireTrackingEvents(cardAmount, cardProduct, cardTxId);
       pushEcommerceEvent("purchase", {
         transaction_id: cardTxId || `card_${Date.now()}`,
         currency: "BRL",
@@ -397,7 +405,7 @@ export default function Success() {
           clearInterval(interval);
           if (!trackingFired.current) {
             trackingFired.current = true;
-            fireTrackingEvents(cardAmount, cardProduct);
+            fireTrackingEvents(cardAmount, cardProduct, cardTxId);
           }
           clearCart();
           setPaymentConfirmed(true);
@@ -480,7 +488,7 @@ export default function Success() {
             if (pollInterval.current) clearInterval(pollInterval.current);
             if (!trackingFired.current) {
               trackingFired.current = true;
-              fireTrackingEvents(orderAmount, orderProductName);
+              fireTrackingEvents(orderAmount, orderProductName, pixData!.transactionId);
             }
             clearCart();
             setPaymentConfirmed(true);

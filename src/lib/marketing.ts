@@ -9,6 +9,7 @@ function appendScript(src: string, attributes: Record<string, string> = {}) {
 export function initializeMarketingScripts() {
   const gtmId = String(import.meta.env.VITE_GTM_ID || "").trim();
   const gaId = String(import.meta.env.VITE_GA_ID || "").trim();
+  const googleAdsId = "AW-18518738981";
   const utmifyPixelId = String(import.meta.env.VITE_UTMIFY_PIXEL_ID || "").trim();
 
   window.dataLayer = window.dataLayer || [];
@@ -18,11 +19,13 @@ export function initializeMarketingScripts() {
     appendScript(`https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(gtmId)}`);
   }
 
-  if (gaId) {
-    appendScript(`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}`);
+  if (gaId || googleAdsId) {
+    appendScript(`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId || googleAdsId)}`);
     const gtag = (...args: unknown[]) => window.dataLayer.push(args as unknown as Record<string, unknown>);
+    window.gtag = gtag;
     gtag("js", new Date());
-    gtag("config", gaId);
+    if (gaId) gtag("config", gaId);
+    gtag("config", googleAdsId);
   }
 
   if (utmifyPixelId) {
