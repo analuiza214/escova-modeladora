@@ -6,9 +6,11 @@ function appendScript(src: string, attributes: Record<string, string> = {}) {
   document.head.appendChild(script);
 }
 
+export const GOOGLE_ANALYTICS_ID = String(import.meta.env.VITE_GA_ID || "G-93HTBGTSWB").trim();
+
 export function initializeMarketingScripts() {
   const gtmId = String(import.meta.env.VITE_GTM_ID || "").trim();
-  const gaId = String(import.meta.env.VITE_GA_ID || "").trim();
+  const gaId = GOOGLE_ANALYTICS_ID;
   const googleAdsId = "AW-18518738981";
   const utmifyPixelId = String(import.meta.env.VITE_UTMIFY_PIXEL_ID || "").trim();
 

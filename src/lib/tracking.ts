@@ -1,3 +1,5 @@
+import { GOOGLE_ANALYTICS_ID } from "@/lib/marketing";
+
 declare global {
   interface Window {
     dataLayer: Record<string, unknown>[];
@@ -98,6 +100,20 @@ export function pushEcommerceEvent(
     ...extraData,
     ecommerce: ecommerceData,
   });
+
+  const ga4Events = new Set(["view_item", "add_to_cart", "view_cart", "begin_checkout", "add_payment_info", "purchase"]);
+  if (ga4Events.has(eventName) && typeof window.gtag === "function") {
+    window.gtag("event", eventName, { ...ecommerceData, send_to: GOOGLE_ANALYTICS_ID });
+  }
+
+  if (eventName === "begin_checkout" && typeof window.gtag === "function") {
+    const value = Number(ecommerceData.value);
+    window.gtag("event", "conversion", {
+      send_to: "AW-18518738981/o8z4CI-dl6EdEKWQtv5E",
+      ...(Number.isFinite(value) ? { value } : {}),
+      currency: "BRL",
+    });
+  }
 
   const metaEventNames: Record<string, string> = {
     view_item: "ViewContent",

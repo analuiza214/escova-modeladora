@@ -489,6 +489,13 @@ export default function Success() {
             if (!trackingFired.current) {
               trackingFired.current = true;
               fireTrackingEvents(orderAmount, orderProductName, pixData!.transactionId);
+              pushEcommerceEvent("purchase", {
+                transaction_id: pixData!.transactionId,
+                currency: "BRL",
+                value: orderAmount,
+                payment_type: "pix",
+                items: [{ item_id: "bellamix_order", item_name: orderProductName, price: orderAmount, quantity: 1 }],
+              }, { event_id: `pix_${pixData!.transactionId}_purchase` });
             }
             clearCart();
             setPaymentConfirmed(true);
